@@ -101,7 +101,6 @@ a:hover { text-decoration: underline; }
 }
 .cover__title { font-size: 3rem; margin: 0.5rem 0; }
 .cover__name { font-size: 1.3rem; margin-top: 1.5rem; }
-.cover__subtitle { color: var(--color-muted); }
 .cover__contact {
   list-style: none;
   padding: 0;
