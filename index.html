@@ -80,7 +80,7 @@
           <td>Node.js, WebSocket, MySQL, Redis</td>
         </tr>
         <tr>
-          <td><a href="#rewalk">Project Re:Walk</a></td>
+          <td><a href="#rewalk">Project Re:Walk <span class="tag">졸업작품</span></a></td>
           <td>서버 구조 설계 및 비동기 객체 생명주기 제어</td>
           <td>C++, Boost.Asio, 멀티스레드</td>
         </tr>
@@ -140,10 +140,14 @@
       <h3>소개</h3>
       <p>접속 IP로 유저의 국가를 판별해 그 나라의 대표 좌표에서 시작시키고, 지나간 자리를 자국 색으로 칠하며 영역을 넓혀가는 실시간 멀티플레이 웹 게임.</p>
       <p>uWebSockets 기반 싱글스레드 비동기 이벤트 루프 위에서 커스텀 바이너리 프로토콜로 서버-클라이언트 통신을 설계·구현. Terraform으로 AWS EC2에 직접 배포하고, k6로 실제 부하 테스트까지 수행.</p>
-      <p>
-        <a href="https://github.com/KimDJ7105/geoIP-cube-painter">GitHub Repository</a> ·
-        <a href="https://youtu.be/dCOCmvIss1s">시연 + 스트레스 테스트 영상 (3m 49s)</a>
-      </p>
+      <p><a href="https://github.com/KimDJ7105/geoIP-cube-painter">GitHub Repository</a></p>
+      <figure class="video">
+        <a class="video__thumb" href="https://youtu.be/dCOCmvIss1s" data-yt-id="dCOCmvIss1s">
+          <img src="https://img.youtube.com/vi/dCOCmvIss1s/hqdefault.jpg" alt="시연 + 스트레스 테스트 영상 썸네일" loading="lazy">
+          <span class="video__play" aria-hidden="true">▶</span>
+        </a>
+        <figcaption>시연 + 스트레스 테스트 영상 (3m 49s)</figcaption>
+      </figure>
       <figure class="shot-pair">
         <img src="assets/img/geoip/play.png" alt="GeoIP Cube Painter 플레이 화면" loading="lazy">
         <figcaption>플레이 화면</figcaption>
@@ -278,11 +282,23 @@
     <div class="project-body">
       <h3>소개</h3>
       <p>렌주룰 기반에 '증강' 시스템을 추가한 실시간 대전 오목 웹 게임. 회원 인증, 로비 및 대기방, 실시간 대전, 전적 조회, 프로필 관리 기능을 구현하고 AWS에 실제 배포까지 완료했다. 서버·클라이언트 양쪽에 걸쳐 주도적으로 개발.</p>
-      <p>
-        <a href="https://github.com/KimDJ7105/project2-1team">GitHub Repository</a> ·
-        <a href="https://youtu.be/3fI8-v2VE0g">시연 영상 (7m 07s)</a> ·
-        <a href="https://youtu.be/c8p_SIs_ErM">장애 시연 영상 (3m 15s)</a>
-      </p>
+      <p><a href="https://github.com/KimDJ7105/project2-1team">GitHub Repository</a></p>
+      <div class="video-row">
+        <figure class="video">
+          <a class="video__thumb" href="https://youtu.be/3fI8-v2VE0g" data-yt-id="3fI8-v2VE0g">
+            <img src="https://img.youtube.com/vi/3fI8-v2VE0g/hqdefault.jpg" alt="시연 영상 썸네일" loading="lazy">
+            <span class="video__play" aria-hidden="true">▶</span>
+          </a>
+          <figcaption>시연 영상 (7m 07s)</figcaption>
+        </figure>
+        <figure class="video">
+          <a class="video__thumb" href="https://youtu.be/c8p_SIs_ErM" data-yt-id="c8p_SIs_ErM">
+            <img src="https://img.youtube.com/vi/c8p_SIs_ErM/hqdefault.jpg" alt="장애 시연 영상 썸네일" loading="lazy">
+            <span class="video__play" aria-hidden="true">▶</span>
+          </a>
+          <figcaption>장애 시연 영상 (3m 15s)</figcaption>
+        </figure>
+      </div>
       <figure class="shot-pair shot-pair--split">
         <div><img src="assets/img/omok/augment-select.png" alt="증강 선택 화면" loading="lazy"><p>증강 선택 화면</p></div>
         <div><img src="assets/img/omok/play.png" alt="플레이 화면" loading="lazy"><p>플레이 화면</p></div>
@@ -322,18 +338,30 @@
       <a href="#nmc">No More Crunch</a>
     </nav>
     <h2 class="page__eyebrow">07</h2>
-    <h2>Project Re:Walk</h2>
-    <p class="project-meta">졸업작품 | 2023.11~2024.08 | C++, Boost.Asio, DirectX 12 | 3인 팀(팀장 겸 서버 프로그래머)</p>
+    <h2>Project Re:Walk <span class="tag">졸업작품</span></h2>
+    <p class="project-meta">2023.11~2024.08 | C++, Boost.Asio, DirectX 12 | 3인 팀(팀장 겸 서버 프로그래머)</p>
 
     <div class="project-body">
       <h3>소개</h3>
       <p>최대 12명이 하나의 Room에서 동시에 전투하는 팀 기반 익스트랙션 슈팅 게임. C++ 및 Boost.Asio 기반 멀티스레드 비동기 서버를 개발했고, 팀장 겸 서버 프로그래머로서 서버 구조 설계와 게임 시스템을 담당했다.</p>
       <p class="footnote">AI 도구 없이 서버 구조 설계부터 구현, 테스트까지 단독으로 진행.</p>
-      <p>
-        <a href="https://github.com/KimDJ7105/Project-ReWalk-ShowCase">GitHub Repository</a> ·
-        <a href="https://youtu.be/5hCu5S4Mi8k">시연 영상 짧은 버전 (3m 05s)</a> ·
-        <a href="https://youtu.be/WILVtBHlOO4">시연 영상 긴 버전 (5m 03s)</a>
-      </p>
+      <p><a href="https://github.com/KimDJ7105/Project-ReWalk-ShowCase">GitHub Repository</a></p>
+      <div class="video-row">
+        <figure class="video">
+          <a class="video__thumb" href="https://youtu.be/5hCu5S4Mi8k" data-yt-id="5hCu5S4Mi8k">
+            <img src="https://img.youtube.com/vi/5hCu5S4Mi8k/hqdefault.jpg" alt="시연 영상 짧은 버전 썸네일" loading="lazy">
+            <span class="video__play" aria-hidden="true">▶</span>
+          </a>
+          <figcaption>시연 영상 짧은 버전 (3m 05s)</figcaption>
+        </figure>
+        <figure class="video">
+          <a class="video__thumb" href="https://youtu.be/WILVtBHlOO4" data-yt-id="WILVtBHlOO4">
+            <img src="https://img.youtube.com/vi/WILVtBHlOO4/hqdefault.jpg" alt="시연 영상 긴 버전 썸네일" loading="lazy">
+            <span class="video__play" aria-hidden="true">▶</span>
+          </a>
+          <figcaption>시연 영상 긴 버전 (5m 03s)</figcaption>
+        </figure>
+      </div>
       <figure class="shot-pair">
         <img src="assets/img/rewalk/play-1.png" alt="Re:Walk 플레이 화면" loading="lazy">
         <figcaption>플레이 화면</figcaption>

@@ -21,6 +21,22 @@ if (!reduceMotion && 'IntersectionObserver' in window) {
   });
 }
 
+// 유튜브 썸네일 클릭 시 그 자리에서 바로 재생
+document.querySelectorAll('.video__thumb').forEach(function (thumb) {
+  thumb.addEventListener('click', function (e) {
+    e.preventDefault();
+    var id = thumb.getAttribute('data-yt-id');
+    var iframe = document.createElement('iframe');
+    iframe.className = 'video__iframe';
+    iframe.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1';
+    iframe.title = thumb.querySelector('img').alt;
+    iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+    iframe.allowFullscreen = true;
+    iframe.loading = 'lazy';
+    thumb.replaceWith(iframe);
+  });
+});
+
 // 상단 네비 현재 위치 강조 (scrollspy)
 (function () {
   var navLinks = document.querySelectorAll('.site-nav__links a');
