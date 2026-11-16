@@ -3,7 +3,7 @@ document.documentElement.classList.add('js');
 var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 if (!reduceMotion && 'IntersectionObserver' in window) {
-  document.querySelectorAll('.page').forEach(function (el) {
+  document.querySelectorAll('.page:not(.page--cover)').forEach(function (el) {
     el.classList.add('reveal');
   });
 

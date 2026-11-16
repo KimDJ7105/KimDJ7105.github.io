@@ -1,24 +1,21 @@
 :root {
+  /* 콘텐츠 영역: 항상 밝은 톤으로 고정 (표지와 의도적으로 대비) */
   --color-bg: #ffffff;
   --color-text: #1b1b1f;
   --color-muted: #5a5a63;
   --color-accent: #2454ff;
   --color-border: #e3e3e8;
   --color-surface: #f6f7fb;
+
+  /* 표지 영역: 항상 어두운 톤으로 고정 */
+  --cover-bg: #0f1116;
+  --cover-text: #f3f4f8;
+  --cover-muted: #9196a3;
+  --cover-accent: #7c9bff;
+
   --font-sans: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --nav-height: 56px;
   --page-max-width: 880px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #15151a;
-    --color-text: #eceef2;
-    --color-muted: #a1a1aa;
-    --color-accent: #6d8bff;
-    --color-border: #2b2b33;
-    --color-surface: #1d1d24;
-  }
 }
 
 * { box-sizing: border-box; }
@@ -45,17 +42,17 @@ a:hover { text-decoration: underline; }
 .site-nav {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 20;
   height: var(--nav-height);
   display: flex;
   align-items: center;
   gap: 1.5rem;
   padding: 0 1.25rem;
-  background: color-mix(in srgb, var(--color-bg) 85%, transparent);
+  background: rgba(15, 17, 22, 0.75);
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-.site-nav__brand { font-weight: 700; color: var(--color-text); }
+.site-nav__brand { font-weight: 700; color: var(--cover-text); }
 .site-nav__links {
   display: flex;
   gap: 1rem;
@@ -65,20 +62,26 @@ a:hover { text-decoration: underline; }
 }
 .site-nav__links a {
   white-space: nowrap;
-  color: var(--color-muted);
+  color: var(--cover-muted);
   font-size: 0.9rem;
 }
-.site-nav__links a.is-active { color: var(--color-accent); font-weight: 600; }
+.site-nav__links a.is-active { color: var(--cover-accent); font-weight: 600; }
 .site-nav__pdf {
   white-space: nowrap;
   font-size: 0.85rem;
   padding: 0.35rem 0.75rem;
-  border: 1px solid var(--color-border);
+  color: var(--cover-text);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
 }
 
 /* ===== 공통 페이지 레이아웃 ===== */
+main { position: relative; }
+
 .page {
+  position: relative;
+  z-index: 1;
+  background: var(--color-bg);
   max-width: var(--page-max-width);
   margin: 0 auto;
   padding: 4rem 1.25rem;
@@ -92,12 +95,22 @@ a:hover { text-decoration: underline; }
   margin-bottom: 0.25rem;
 }
 
-/* ===== 표지 ===== */
+/* ===== 표지: 어두운 톤으로 고정, 스크롤해도 뒤에 붙박여 있다가 다음 섹션이 그 위로 덮임 ===== */
 .page--cover {
-  min-height: 90vh;
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  max-width: none;
+  height: 100vh;
+  height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: var(--cover-bg);
+  color: var(--cover-text);
+  border-bottom: none;
 }
 .cover__title { font-size: 3rem; margin: 0.5rem 0; }
 .cover__name { font-size: 1.3rem; margin-top: 1.5rem; }
@@ -108,15 +121,26 @@ a:hover { text-decoration: underline; }
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
-  color: var(--color-muted);
+  justify-content: center;
+  color: var(--cover-muted);
 }
+.cover__contact a { color: var(--cover-accent); }
 .cover__date {
   margin-top: 2.5rem;
   font-size: 0.85rem;
-  color: var(--color-muted);
+  color: var(--cover-muted);
+}
+
+/* 표지 바로 다음 섹션: 둥근 상단 모서리 + 그림자로 "시트가 덮인다"는 느낌을 줌 */
+.page--summary {
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -24px 48px rgba(0, 0, 0, 0.18);
 }
 
 .interests p { margin: 0.5rem 0; color: var(--color-muted); }
+
+.closing__thanks { font-weight: 600; margin-top: 2rem; }
+.closing__name { color: var(--color-muted); margin-top: 0.25rem; }
 
 /* ===== 표 ===== */
 table {
@@ -317,15 +341,27 @@ html.js .reveal.is-visible {
   .video__play { display: none; }
   .video__iframe { display: none; }
   .page {
+    position: static;
     border-bottom: none;
+    border-radius: 0;
+    box-shadow: none;
     break-before: page;
     padding: 0;
     max-width: none;
+    background: #fff;
+    color: #000;
   }
   .page--cover {
     break-before: avoid;
+    position: static;
+    height: auto;
     min-height: auto;
+    background: #fff;
+    color: #000;
   }
+  .cover__contact,
+  .cover__date { color: #000; }
+  .cover__contact a { color: #000; }
   a { color: inherit; text-decoration: none; }
   a[href^="http"]::after {
     content: " (" attr(href) ")";
