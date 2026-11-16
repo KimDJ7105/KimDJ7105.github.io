@@ -26,6 +26,8 @@ html, body {
   color: var(--color-text);
   font-family: var(--font-sans);
   line-height: 1.6;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .sr-only {
