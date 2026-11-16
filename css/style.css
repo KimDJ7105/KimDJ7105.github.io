@@ -81,10 +81,10 @@ main { position: relative; }
 .page {
   position: relative;
   z-index: 1;
+  width: 100%;
   background: var(--color-bg);
-  max-width: var(--page-max-width);
-  margin: 0 auto;
-  padding: 4rem 1.25rem;
+  /* 배경은 화면 끝까지 꽉 채우고, 안쪽 글 너비만 가운데로 제한 */
+  padding: 4rem max(1.25rem, calc((100% - var(--page-max-width)) / 2));
   border-bottom: 1px solid var(--color-border);
 }
 .page:last-child { border-bottom: none; }
@@ -100,7 +100,6 @@ main { position: relative; }
   position: sticky;
   top: 0;
   z-index: 0;
-  max-width: none;
   height: 100vh;
   height: 100svh;
   display: flex;
@@ -139,8 +138,15 @@ main { position: relative; }
 
 .interests p { margin: 0.5rem 0; color: var(--color-muted); }
 
+/* ===== 마무리: 표지와 같은 어두운 톤 ===== */
+.page--closing {
+  background: var(--cover-bg);
+  color: var(--cover-text);
+}
+.page--closing .page__eyebrow { color: var(--cover-muted); }
 .closing__thanks { font-weight: 600; margin-top: 2rem; }
-.closing__name { color: var(--color-muted); margin-top: 0.25rem; }
+.closing__name { color: var(--cover-muted); margin-top: 0.25rem; }
+.page--closing .back-to-top { color: var(--cover-accent); }
 
 /* ===== 표 ===== */
 table {
