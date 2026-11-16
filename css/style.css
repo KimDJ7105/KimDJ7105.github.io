@@ -136,8 +136,6 @@ main { position: relative; }
   box-shadow: 0 -24px 48px rgba(0, 0, 0, 0.18);
 }
 
-.interests p { margin: 0.5rem 0; color: var(--color-muted); }
-
 /* ===== 마무리: 표지와 같은 어두운 톤 ===== */
 .page--closing {
   background: var(--cover-bg);
@@ -301,8 +299,39 @@ code {
   font-size: 0.9rem;
 }
 
-.lead { font-size: 1.1rem; }
+.lead {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  margin: 1rem 0 1.5rem;
+}
 .footnote { color: var(--color-muted); font-size: 0.9rem; margin-top: 2rem; }
+
+.interests__list {
+  list-style: none;
+  margin: 1.5rem 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.interests__list li {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.interests__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
 
 blockquote {
   font-size: 1.3rem;
