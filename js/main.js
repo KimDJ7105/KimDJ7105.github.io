@@ -2,6 +2,26 @@ document.documentElement.classList.add('js');
 
 var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// 앵커 클릭 스크롤 — 표지(#top)는 position:sticky라 브라우저 기본 앵커 이동이
+// 가끔 어긋나서, 직접 scrollTo로 처리. 나머지는 scrollIntoView로 통일.
+document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+  var id = link.getAttribute('href').slice(1);
+  if (!id) return;
+  var target = document.getElementById(id);
+  if (!target) return;
+
+  link.addEventListener('click', function (e) {
+    e.preventDefault();
+    var behavior = reduceMotion ? 'auto' : 'smooth';
+    if (id === 'top') {
+      window.scrollTo({ top: 0, left: 0, behavior: behavior });
+    } else {
+      target.scrollIntoView({ behavior: behavior, block: 'start' });
+    }
+    history.pushState(null, '', '#' + id);
+  });
+});
+
 if (!reduceMotion && 'IntersectionObserver' in window) {
   document.querySelectorAll('.page:not(.page--cover)').forEach(function (el) {
     el.classList.add('reveal');
