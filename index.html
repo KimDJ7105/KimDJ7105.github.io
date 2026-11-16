@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>김동재 포트폴리오</title>
+<meta name="description" content="김동재 백엔드/서버 개발 포트폴리오">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- 화면에서만 보이는 고정 바로가기 네비. 인쇄 시 숨김(css) -->
+<header class="site-nav" aria-label="전체 바로가기">
+  <a class="site-nav__brand" href="#top">김동재</a>
+  <nav class="site-nav__links">
+    <a href="#summary">요약</a>
+    <a href="#ai-approach">AI 활용</a>
+    <a href="#geoip">GeoIP</a>
+    <a href="#motm">살인의 추억</a>
+    <a href="#truss">Truss</a>
+    <a href="#omok">증강 오목</a>
+    <a href="#rewalk">Re:Walk</a>
+    <a href="#nmc">No More Crunch</a>
+  </nav>
+  <a class="site-nav__pdf" href="portfolio.pdf">PDF 다운로드</a>
+</header>
+
+<main>
+
+  <!-- ============ 표지 ============ -->
+  <section id="top" class="page page--cover">
+    <p class="cover__date"><!-- COMPANY-SPECIFIC: 날짜 -->2026-11-24</p>
+    <h1 class="cover__title">PORTFOLIO</h1>
+    <p class="cover__subtitle">
+      <!-- COMPANY-SPECIFIC: 부제 -->
+      넷마블네오 2026 AI 인턴십 · AI Game Maker 지원 포트폴리오
+    </p>
+    <p class="cover__name">김동재</p>
+    <ul class="cover__contact">
+      <li>010-2651-7105</li>
+      <li>toymas24@gmail.com</li>
+      <li><a href="https://github.com/KimDJ7105">github.com/KimDJ7105</a></li>
+    </ul>
+  </section>
+
+  <!-- ============ 목차 + 자기소개 & 프로젝트 요약 ============ -->
+  <section id="summary" class="page page--summary">
+    <h2 class="page__eyebrow">01</h2>
+    <h2>자기소개 &amp; 프로젝트 요약</h2>
+
+    <div class="intro">
+      <p>[자기소개 본문 — 넥토리얼판 p3 기반, 채울 예정]</p>
+    </div>
+
+    <table class="project-table">
+      <caption class="sr-only">프로젝트 목차 및 핵심 강점 요약</caption>
+      <thead>
+        <tr>
+          <th scope="col">프로젝트</th>
+          <th scope="col">핵심 강점</th>
+          <th scope="col">기술 스택</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="#geoip">GeoIP Cube Painter</a></td>
+          <td>[핵심 강점 채울 예정]</td>
+          <td>C++, uWebSockets</td>
+        </tr>
+        <tr>
+          <td><a href="#motm">살인의 추억</a></td>
+          <td>LLM 기반 판정 게임 설계 · 모델 한계 판단 · 실측 기반 구조 결정</td>
+          <td>C++, Boost.Beast, Ollama</td>
+        </tr>
+        <tr>
+          <td><a href="#truss">Truss <span class="tag">부트캠프 최종 프로젝트 1등</span></a></td>
+          <td>LLM(Claude Haiku) 주문 생성 · 운영 환경 장애 진단 · 데이터 정합성</td>
+          <td>Go, Kafka, AWS Bedrock</td>
+        </tr>
+        <tr>
+          <td><a href="#omok">증강 오목 웹 게임</a></td>
+          <td>[핵심 강점 채울 예정]</td>
+          <td>Node.js, Socket.io, Redis</td>
+        </tr>
+        <tr>
+          <td><a href="#rewalk">Project Re:Walk</a></td>
+          <td>[핵심 강점 채울 예정]</td>
+          <td>C++, Boost.Asio</td>
+        </tr>
+        <tr>
+          <td><a href="#nmc">No More Crunch</a></td>
+          <td>[핵심 강점 채울 예정]</td>
+          <td>Unity, Photon Fusion2</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============ 나의 AI 활용 방법 ============ -->
+  <section id="ai-approach" class="page page--ai-approach">
+    <h2 class="page__eyebrow">02</h2>
+    <h2>나의 AI 활용 방법</h2>
+    <p class="lead">AI는 선택지를 넓히고 속도를 내는 역할, 저는 근거로 고르고 실제 환경에서 확인하는 역할입니다.</p>
+
+    <table class="ai-table">
+      <thead>
+        <tr><th scope="col">쓰는 방식</th><th scope="col">구체적으로</th><th scope="col">사례</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>설계 상대</td><td>AI 안을 받고, 복잡도·메모리 근거로 기각하거나 재질문해 다음 안으로</td><td><a href="#geoip">GeoIP 타일 동기화 1→3차안</a></td></tr>
+        <tr><td>진단 조수</td><td>AI가 진단 SQL을 쓰고, 실제 DB에서 실행해 위반 데이터로 원인 확정</td><td><a href="#truss">Truss 초과 체결</a></td></tr>
+        <tr><td>학습 가속</td><td>처음 쓰는 Go·Kafka를 AI로 익히고, 시간은 설계와 장애 진단에 씀</td><td><a href="#truss">Truss</a></td></tr>
+        <tr><td>게임 규칙 담당</td><td>LLM에게 채점·판정을 맡기고, 모델이 틀리면 프롬프트가 아니라 모델 자체를 의심해 교체</td><td><a href="#motm">살인의 추억</a></td></tr>
+        <tr><td>제품 구성요소</td><td>LLM을 서비스 기능으로 넣고, 출력은 틀릴 수 있다는 전제로 검증</td><td><a href="#truss">Truss AI 트레이더</a></td></tr>
+      </tbody>
+    </table>
+
+    <p class="footnote">AI 없이 서버를 처음부터 끝까지 설계·구현해본 경험(<a href="#rewalk">Re:Walk</a>)이 AI 결과물을 판단하는 기준이 됩니다.</p>
+  </section>
+
+  <!-- ============ GeoIP Cube Painter ============ -->
+  <section id="geoip" class="page page--project">
+    <nav class="project-jump" aria-label="다른 프로젝트로 바로가기">
+      <a href="#summary">요약</a>
+      <a href="#motm">살인의 추억</a>
+      <a href="#truss">Truss</a>
+      <a href="#omok">증강 오목</a>
+      <a href="#rewalk">Re:Walk</a>
+      <a href="#nmc">No More Crunch</a>
+    </nav>
+    <h2 class="page__eyebrow">03</h2>
+    <h2>GeoIP Cube Painter</h2>
+    <p class="project-meta">개인 프로젝트 | C++, uWebSockets</p>
+    <div class="project-body">
+      <p>[비트망고판 p9~12 내용 채울 예정]</p>
+    </div>
+    <div class="project-footer">
+      <a class="back-to-summary" href="#summary">요약으로 돌아가기</a>
+      <a class="next-project" href="#motm">다음 프로젝트: 살인의 추억 ▸</a>
+    </div>
+  </section>
+
+  <!-- ============ 살인의 추억 ============ -->
+  <section id="motm" class="page page--project">
+    <nav class="project-jump" aria-label="다른 프로젝트로 바로가기">
+      <a href="#summary">요약</a>
+      <a href="#geoip">GeoIP</a>
+      <a href="#truss">Truss</a>
+      <a href="#omok">증강 오목</a>
+      <a href="#rewalk">Re:Walk</a>
+      <a href="#nmc">No More Crunch</a>
+    </nav>
+    <h2 class="page__eyebrow">04</h2>
+    <h2>살인의 추억</h2>
+    <p class="project-meta">개인 프로젝트 | 2026 | C++, Boost.Beast/Asio, WebSocket, Ollama(qwen2.5:7b)</p>
+    <p class="project-message">AI 결과를 그대로 믿지 않고, 판단은 측정으로 내린다</p>
+
+    <div class="project-body">
+      <h3>소개</h3>
+      <p>[신규 작성 예정 — README/docs 기반]</p>
+
+      <h3>프롬프트로 안 고쳐지는 오판정: 모델 한계 판단과 교체</h3>
+      <p>[신규 작성 예정]</p>
+
+      <h3>실측으로 '만들지 않기로' 한 구조</h3>
+      <p>[신규 작성 예정]</p>
+    </div>
+    <div class="project-footer">
+      <a class="back-to-summary" href="#summary">요약으로 돌아가기</a>
+      <a class="next-project" href="#truss">다음 프로젝트: Truss ▸</a>
+    </div>
+  </section>
+
+  <!-- ============ Truss ============ -->
+  <section id="truss" class="page page--project">
+    <nav class="project-jump" aria-label="다른 프로젝트로 바로가기">
+      <a href="#summary">요약</a>
+      <a href="#geoip">GeoIP</a>
+      <a href="#motm">살인의 추억</a>
+      <a href="#omok">증강 오목</a>
+      <a href="#rewalk">Re:Walk</a>
+      <a href="#nmc">No More Crunch</a>
+    </nav>
+    <h2 class="page__eyebrow">05</h2>
+    <h2>Truss <span class="tag">멋쟁이사자처럼 클라우드 엔지니어링 부트캠프 6기 최종 프로젝트 1등</span></h2>
+    <p class="project-meta">3인 팀(팀장 및 백엔드 개발) | Go, Kafka, AWS Bedrock, Redis, MySQL</p>
+
+    <div class="project-body">
+      <h3>소개</h3>
+      <p>[비트망고판 p3 수정 반영 예정]</p>
+
+      <h3>AI 트레이더: LLM 출력을 믿지 않는 주문 파이프라인</h3>
+      <p>[신규 작성 예정 — 4겹 방어 파이프라인]</p>
+
+      <h3>운영 환경에서만 터진 리밸런스 무한 루프</h3>
+      <p>[신규 작성 예정 — MSK 인증 지연]</p>
+
+      <h3>초과 체결</h3>
+      <p>[비트망고판 p4 그대로]</p>
+
+      <h3>중복 체결</h3>
+      <p>[비트망고판 p5, 요약 박스만 수정]</p>
+    </div>
+    <div class="project-footer">
+      <a class="back-to-summary" href="#summary">요약으로 돌아가기</a>
+      <a class="next-project" href="#omok">다음 프로젝트: 증강 오목 ▸</a>
+    </div>
+  </section>
+
+  <!-- ============ 증강 오목 웹 게임 ============ -->
+  <section id="omok" class="page page--project">
+    <nav class="project-jump" aria-label="다른 프로젝트로 바로가기">
+      <a href="#summary">요약</a>
+      <a href="#geoip">GeoIP</a>
+      <a href="#motm">살인의 추억</a>
+      <a href="#truss">Truss</a>
+      <a href="#rewalk">Re:Walk</a>
+      <a href="#nmc">No More Crunch</a>
+    </nav>
+    <h2 class="page__eyebrow">06</h2>
+    <h2>증강 오목 웹 게임</h2>
+    <p class="project-meta">Node.js, Socket.io, Redis</p>
+    <div class="project-body">
+      <p>[비트망고판 p13~15 그대로]</p>
+    </div>
+    <div class="project-footer">
+      <a class="back-to-summary" href="#summary">요약으로 돌아가기</a>
+      <a class="next-project" href="#rewalk">다음 프로젝트: Re:Walk ▸</a>
+    </div>
+  </section>
+
+  <!-- ============ Project Re:Walk ============ -->
+  <section id="rewalk" class="page page--project">
+    <nav class="project-jump" aria-label="다른 프로젝트로 바로가기">
+      <a href="#summary">요약</a>
+      <a href="#geoip">GeoIP</a>
+      <a href="#motm">살인의 추억</a>
+      <a href="#truss">Truss</a>
+      <a href="#omok">증강 오목</a>
+      <a href="#nmc">No More Crunch</a>
+    </nav>
+    <h2 class="page__eyebrow">07</h2>
+    <h2>Project Re:Walk</h2>
+    <p class="project-meta">C++, Boost.Asio</p>
+    <div class="project-body">
+      <p>[비트망고판 p16~18, 한 줄 수정: AI 도구 없이 서버 구조 설계부터 구현·테스트까지 단독 진행]</p>
+    </div>
+    <div class="project-footer">
+      <a class="back-to-summary" href="#summary">요약으로 돌아가기</a>
+      <a class="next-project" href="#nmc">다음 프로젝트: No More Crunch ▸</a>
+    </div>
+  </section>
+
+  <!-- ============ No More Crunch ============ -->
+  <section id="nmc" class="page page--project">
+    <nav class="project-jump" aria-label="다른 프로젝트로 바로가기">
+      <a href="#summary">요약</a>
+      <a href="#geoip">GeoIP</a>
+      <a href="#motm">살인의 추억</a>
+      <a href="#truss">Truss</a>
+      <a href="#omok">증강 오목</a>
+      <a href="#rewalk">Re:Walk</a>
+    </nav>
+    <h2 class="page__eyebrow">08</h2>
+    <h2>No More Crunch</h2>
+    <p class="project-meta">Unity, Photon Fusion2</p>
+    <div class="project-body">
+      <p>[넥토리얼판 p11~12 그대로]</p>
+    </div>
+    <div class="project-footer">
+      <a class="back-to-summary" href="#summary">요약으로 돌아가기</a>
+      <a class="next-project" href="#closing">마무리로 ▸</a>
+    </div>
+  </section>
+
+  <!-- ============ 마무리 ============ -->
+  <section id="closing" class="page page--closing">
+    <h2 class="page__eyebrow">09</h2>
+    <h2>마무리</h2>
+    <blockquote>
+      "더 많은 사람이 함께, 안정적으로 즐길 수 있는 게임을 어떻게 만들 것인가?"
+    </blockquote>
+    <p>
+      클라이언트부터 서버, 인프라까지 넘나든 프로젝트들은 이 질문으로 이어집니다.
+      <!-- COMPANY-SPECIFIC: 마무리 문구 -->
+      넷마블네오에서 AI를 동료로 삼아, 무엇을 맡기고 무엇을 직접 확인할지 판단하며 이 질문의 답을 찾아가고 싶습니다.
+    </p>
+    <ul class="cover__contact">
+      <li>010-2651-7105</li>
+      <li>toymas24@gmail.com</li>
+      <li><a href="https://github.com/KimDJ7105">github.com/KimDJ7105</a></li>
+    </ul>
+    <a class="back-to-top" href="#top">맨 위로</a>
+  </section>
+
+</main>
+
+<script src="js/main.js" defer></script>
+</body>
+</html>
