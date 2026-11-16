@@ -111,14 +111,13 @@
 
     <table class="ai-table">
       <thead>
-        <tr><th scope="col">쓰는 방식</th><th scope="col">구체적으로</th><th scope="col">사례</th></tr>
+        <tr><th scope="col">활용 방식</th><th scope="col">사례</th></tr>
       </thead>
       <tbody>
-        <tr><td>설계 상대</td><td>AI 안을 받고, 복잡도·메모리 근거로 기각하거나 재질문해 다음 안으로</td><td><a href="#geoip">GeoIP 타일 동기화 1→3차안</a></td></tr>
-        <tr><td>진단 조수</td><td>AI가 진단 SQL을 쓰고, 실제 DB에서 실행해 위반 데이터로 원인 확정</td><td><a href="#truss">Truss 초과 체결</a></td></tr>
-        <tr><td>학습 가속</td><td>처음 쓰는 Go·Kafka를 AI로 익히고, 시간은 설계와 장애 진단에 씀</td><td><a href="#truss">Truss</a></td></tr>
-        <tr><td>게임 규칙 담당</td><td>LLM에게 채점·판정을 맡기고, 모델이 틀리면 프롬프트가 아니라 모델 자체를 의심해 교체</td><td><a href="#motm">살인의 추억</a></td></tr>
-        <tr><td>제품 구성요소</td><td>LLM을 서비스 기능으로 넣고, 출력은 틀릴 수 있다는 전제로 검증</td><td><a href="#truss">Truss AI 트레이더</a></td></tr>
+        <tr><td><strong>설계 논의</strong> — AI를 논의 상대로 세워 안을 받고, 비용·복잡도 근거로 기각하거나 재질문해 다음 안으로 좁혀갑니다.</td><td><a href="#geoip">GeoIP 타일 동기화 1→3차안</a></td></tr>
+        <tr><td><strong>진단 조수</strong> — AI에게 가설과 진단 방법을 받고, 실제 환경에서 직접 확인해 원인을 확정합니다.</td><td><a href="#truss">Truss 초과 체결</a></td></tr>
+        <tr><td><strong>학습 가속</strong> — 낯선 기술은 AI로 빠르게 익히고, 확보한 시간은 설계와 문제 해결에 씁니다.</td><td><a href="#truss">Truss</a></td></tr>
+        <tr><td><strong>출력 검증</strong> — 시스템에 들어가는 LLM 출력은 틀릴 수 있다는 전제로 검증하고, 한계가 보이면 프롬프트가 아니라 모델 자체를 의심해 교체합니다.</td><td><a href="#motm">살인의 추억</a> · <a href="#truss">Truss AI 트레이더</a></td></tr>
       </tbody>
     </table>
 
