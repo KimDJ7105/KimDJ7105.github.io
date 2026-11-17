@@ -277,8 +277,8 @@
       <h3>검증 설계 — LLM 출력 처리 파이프라인</h3>
       <p class="project-message">LLM은 틀릴 수 있다는 전제로, 형식은 API로 강제하고 내용은 여러 겹으로 검증했다.</p>
 
-      <p><strong>입력</strong>: 마켓별 최근 30개 가격(원형 버퍼)을 요약하지 않고 <code>{market, prices[]}</code> JSON 배열로 그대로 전달한다. 상승률·최댓값으로 미리 압축하면 모델이 판단에 쓸 추세의 모양 정보를 먼저 버리게 되기 때문이다. 시스템 프롬프트에는 "판단할 게 없으면 decisions를 빈 배열로"를 명시해 억지 판단 압박도 없앴다.</p>
-      <p><strong>출력</strong>: Bedrock Converse API의 tool-use를 <code>ToolChoice</code>로 고정해, 모델이 자유 텍스트가 아니라 정해진 스키마로만 답하도록 강제했다. market / side(BUY·SELL enum) / price / quantity를 전부 required로 뒀다. 저렴한 모델(Haiku)일수록 형식이 흐트러지기 쉬워서, 프롬프트만으로는 형식을 맡기지 않았다.</p>
+      <p><strong>입력</strong>: 마켓별 최근 30개 가격을 요약하지 않고 <code>{market, prices[]}</code> JSON 배열로 그대로 전달한다. 상승률·최댓값으로 미리 압축하면 모델이 판단에 쓸 추세의 모양 정보를 먼저 버리게 되기 때문이다. 시스템 프롬프트에는 "판단할 게 없으면 decisions를 빈 배열로"를 명시해 억지 판단 압박도 없앴다.</p>
+      <p><strong>출력</strong>: Bedrock Converse API의 tool-use를 <code>ToolChoice</code>로 고정해, 모델이 자유 텍스트가 아니라 정해진 스키마로만 답하도록 강제했다. market / side(BUY·SELL enum) / price / quantity를 전부 required로 설정했다.</p>
 
       <table class="compare-table">
         <thead>
