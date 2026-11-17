@@ -288,7 +288,7 @@
           <tr><th scope="row">1. 항목 단위 검사<br>(순수 함수, 유닛테스트)</th><td>빈 market, BUY/SELL 외 side, 0 이하 가격·수량</td><td>이상한 1건만 제외하고 나머지 판단은 유지, 제외 건수 로그</td></tr>
           <tr><th scope="row">2. 호출 실패·지연</th><td>연결 실패, tool-use 블록 없음, 30초 타임아웃</td><td>이번 주기만 건너뜀, 다른 마켓·봇으로 전파 안 됨</td></tr>
           <tr><th scope="row">3. 주문 변환</th><td>임의 실수 가격, 부동소수점 잡음</td><td>호가 단위 배수로 스냅, 수량 소수 8자리 고정</td></tr>
-          <tr><th scope="row">4. 서버 공통 검증</th><td>환각 마켓 코드(예: KRW-FAKE), 잘못된 side·가격·수량</td><td>400 거부 후 다음 틱, 재생은 멈추지 않음</td></tr>
+          <tr><th scope="row">4. 서버 공통 검증</th><td>잘못된 마켓 코드·side·가격·수량</td><td>400 거부 후 다음 틱, 재생은 멈추지 않음</td></tr>
         </tbody>
       </table>
 
