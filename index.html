@@ -226,7 +226,7 @@
       </table>
 
       <h3>설계 판단 — 측정으로 점검한 기능 추가 여부</h3>
-      <p><strong>원래 계획</strong>: AI 호출이 게임 서버를 막지 않도록 비동기 Job Queue와 Worker를 만들기로 계획했었다.</p>
+      <p><strong>대상 기능</strong>: AI 호출이 게임 서버를 막지 않도록 비동기 Job Queue와 Worker를 만들기로 계획했었다.</p>
       <p><strong>측정</strong>: Python(asyncio) 테스트 스크립트로 N개 방의 범인 역할 WebSocket 클라이언트를 전부 동시에 제어해, 정확히 같은 시점에 범행을 제출하도록 만들어 Ollama에 요청이 한꺼번에 몰리게 했다. 같은 시간 동안 이 요청들과 무관한 별도의 통제 방에도 0.2초 간격으로 메시지를 계속 보내, 요청이 쌓인 동안 게임 서버의 다른 처리까지 느려지는지 함께 측정했다.</p>
 
       <table class="compare-table">
