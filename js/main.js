@@ -481,7 +481,7 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   var TRAVEL_MS = 600;
   var ACCESS_MS = 500;
   var WAIT_MS = 750;
-  var OWNED = [[0, 3], [1, 4], [2, 5]]; // Thread N이 "변경 후"에 전담하는 Room 인덱스
+  var OWNED = [[0, 1], [2, 3], [4, 5]]; // Thread N이 "변경 후"에 전담하는 Room 인덱스 — 레이아웃상 같은 행(行)과 일치
 
   var threadEls = [0, 1, 2].map(function (i) { return dialog.querySelector('#thread-box-' + i); });
   var threadSubEls = [0, 1, 2].map(function (i) { return dialog.querySelector('#thread-sub-' + i); });
