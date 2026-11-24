@@ -69,12 +69,13 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   var GRID = 11250;
 
   function setBar(key, value, max, labelText) {
-    var el = dialog.querySelector('[data-bar="' + key + '"]');
-    if (!el) return;
+    var fill = dialog.querySelector('[data-bar="' + key + '"]');
+    var valueEl = dialog.querySelector('[data-val="' + key + '"]');
+    if (!fill || !valueEl) return;
     var pct = Math.min(100, (value / max) * 100);
     if (value > 0) pct = Math.max(pct, 3); // 값이 있으면 눈에 보이는 최소 너비 보장
-    el.style.width = pct + '%';
-    el.textContent = labelText;
+    fill.style.width = pct + '%';
+    valueEl.textContent = labelText;
   }
 
   function render() {
