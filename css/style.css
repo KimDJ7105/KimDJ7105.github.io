@@ -463,6 +463,78 @@ th { color: var(--color-muted); font-weight: 600; }
   z-index: 3;
 }
 
+/* ===== 스레드·Room 모델 변경 전·후 비교 데모 ===== */
+.mode-toggle {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.25rem 0 0.75rem;
+}
+.mode-toggle__btn {
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-bg);
+  color: var(--color-muted);
+  cursor: pointer;
+}
+.mode-toggle__btn.is-active {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(36, 84, 255, 0.08);
+}
+.thread-canvas {
+  position: relative;
+  width: 720px;
+  max-width: 100%;
+  height: 340px;
+  margin: 0.25rem auto 0.75rem;
+}
+.thread-box {
+  position: absolute;
+  width: 190px;
+  box-sizing: border-box;
+  border: 1px solid var(--color-text);
+  border-radius: 8px;
+  background: var(--color-bg);
+  padding: 0.5rem 0.65rem;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  z-index: 1;
+}
+.thread-box__title { font-weight: 700; font-size: 0.92rem; }
+.thread-box__sub { font-size: 0.75rem; color: var(--color-muted); margin-top: 0.2rem; }
+.thread-box.is-hit-pass { box-shadow: 0 0 0 4px rgba(36, 84, 255, 0.3); border-color: var(--color-accent); }
+.thread-box.is-hit-fail { box-shadow: 0 0 0 4px rgba(201, 68, 68, 0.3); border-color: #c94444; }
+.room-box {
+  position: absolute;
+  width: 150px;
+  box-sizing: border-box;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  padding: 0.5rem 0.6rem;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  z-index: 1;
+}
+.room-box__title { font-weight: 700; font-size: 0.88rem; }
+.room-box__sub { font-size: 0.72rem; color: var(--color-muted); margin-top: 0.2rem; }
+.room-box.is-hit-pass { box-shadow: 0 0 0 4px rgba(36, 84, 255, 0.3); border-color: var(--color-accent); }
+.room-box.is-hit-fail { box-shadow: 0 0 0 4px rgba(201, 68, 68, 0.3); border-color: #c94444; }
+.thread-pulse {
+  position: absolute;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--color-accent);
+  white-space: nowrap;
+  transition: left 0.6s ease, top 0.6s ease, background 0.2s ease;
+  z-index: 3;
+}
+.thread-pulse.is-wait { background: #c94444; }
+
 .shot-pair {
   margin: 1.5rem 0;
   text-align: center;

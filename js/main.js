@@ -468,6 +468,141 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   dialog.addEventListener('close', stop);
 })();
 
+// Re:Walk 스레드·Room 모델 변경 전·후 비교 데모 (모달)
+(function () {
+  var dialog = document.getElementById('thread-model-demo');
+  if (!dialog) return;
+
+  var openBtn = document.querySelector('[data-dialog="thread-model-demo"]');
+  var closeBtn = dialog.querySelector('.demo-dialog__close');
+  var canvas = dialog.querySelector('#thread-canvas');
+  var modeButtons = dialog.querySelectorAll('.mode-toggle__btn');
+
+  var TRAVEL_MS = 600;
+  var ACCESS_MS = 500;
+  var WAIT_MS = 750;
+  var OWNED = [[0, 3], [1, 4], [2, 5]]; // Thread N이 "변경 후"에 전담하는 Room 인덱스
+
+  var threadEls = [0, 1, 2].map(function (i) { return dialog.querySelector('#thread-box-' + i); });
+  var threadSubEls = [0, 1, 2].map(function (i) { return dialog.querySelector('#thread-sub-' + i); });
+  var roomEls = [0, 1, 2, 3, 4, 5].map(function (i) { return dialog.querySelector('#room-box-' + i); });
+  var roomSubEls = [0, 1, 2, 3, 4, 5].map(function (i) { return dialog.querySelector('#room-sub-' + i); });
+
+  var mode = 'before';
+  var roomBusy = [false, false, false, false, false, false];
+  var timers = [];
+
+  function ownerOf(roomIndex) {
+    for (var t = 0; t < OWNED.length; t++) {
+      if (OWNED[t].indexOf(roomIndex) !== -1) return t;
+    }
+    return -1;
+  }
+
+  function updateLabels() {
+    threadSubEls.forEach(function (el, i) {
+      el.textContent = mode === 'before'
+        ? '모든 Room 접근 가능'
+        : ('Room ' + OWNED[i].map(function (r) { return r + 1; }).join('·') + ' 전담');
+    });
+    roomSubEls.forEach(function (el, r) {
+      el.textContent = mode === 'before' ? '공유 자원' : ('Thread ' + (ownerOf(r) + 1) + ' 전담');
+    });
+  }
+
+  function highlightBox(el, isPass) {
+    var cls = isPass ? 'is-hit-pass' : 'is-hit-fail';
+    el.classList.add(cls);
+    setTimeout(function () { el.classList.remove(cls); }, 700);
+  }
+
+  function threadAccess(threadIndex) {
+    var pool = mode === 'before' ? [0, 1, 2, 3, 4, 5] : OWNED[threadIndex];
+    var roomIndex = pool[Math.floor(Math.random() * pool.length)];
+    var threadEl = threadEls[threadIndex];
+    var roomEl = roomEls[roomIndex];
+
+    var pulse = document.createElement('div');
+    pulse.className = 'thread-pulse';
+    pulse.textContent = 'T' + (threadIndex + 1);
+    pulse.style.left = (threadEl.offsetLeft + threadEl.offsetWidth - 10) + 'px';
+    pulse.style.top = (threadEl.offsetTop + threadEl.offsetHeight / 2 - 10) + 'px';
+    canvas.appendChild(pulse);
+
+    var targetX = roomEl.offsetLeft + roomEl.offsetWidth / 2 - 20;
+    var targetY = roomEl.offsetTop + roomEl.offsetHeight / 2 - 10;
+    requestAnimationFrame(function () {
+      pulse.style.left = targetX + 'px';
+      pulse.style.top = targetY + 'px';
+    });
+
+    setTimeout(function () {
+      function proceed() {
+        roomBusy[roomIndex] = true;
+        pulse.classList.remove('is-wait');
+        pulse.textContent = 'T' + (threadIndex + 1);
+        highlightBox(roomEl, true);
+        highlightBox(threadEl, true);
+        setTimeout(function () {
+          roomBusy[roomIndex] = false;
+          pulse.remove();
+        }, ACCESS_MS);
+      }
+
+      if (roomBusy[roomIndex]) {
+        pulse.classList.add('is-wait');
+        pulse.textContent = 'T' + (threadIndex + 1) + ' 대기';
+        highlightBox(roomEl, false);
+        highlightBox(threadEl, false);
+        setTimeout(proceed, WAIT_MS);
+      } else {
+        proceed();
+      }
+    }, TRAVEL_MS);
+  }
+
+  function start() {
+    if (timers.length) return;
+    mode = 'before';
+    modeButtons.forEach(function (b) { b.classList.toggle('is-active', b.dataset.mode === 'before'); });
+    roomBusy = [false, false, false, false, false, false];
+    updateLabels();
+    timers = [0, 1, 2].map(function (i) {
+      return setInterval(function () { threadAccess(i); }, 1500 + i * 300);
+    });
+  }
+
+  function stop() {
+    timers.forEach(function (t) { clearInterval(t); });
+    timers = [];
+    canvas.querySelectorAll('.thread-pulse').forEach(function (el) { el.remove(); });
+    threadEls.forEach(function (el) { el.classList.remove('is-hit-pass', 'is-hit-fail'); });
+    roomEls.forEach(function (el) { el.classList.remove('is-hit-pass', 'is-hit-fail'); });
+    roomBusy = [false, false, false, false, false, false];
+  }
+
+  modeButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      mode = btn.dataset.mode;
+      modeButtons.forEach(function (b) { b.classList.toggle('is-active', b === btn); });
+      updateLabels();
+    });
+  });
+
+  if (openBtn) {
+    openBtn.addEventListener('click', function () {
+      if (dialog.open) return;
+      dialog.showModal();
+      start();
+    });
+  }
+  if (closeBtn) closeBtn.addEventListener('click', function () { dialog.close(); });
+  dialog.addEventListener('click', function (e) {
+    if (e.target === dialog) dialog.close();
+  });
+  dialog.addEventListener('close', stop);
+})();
+
 // 상단 네비 현재 위치 강조 (scrollspy)
 (function () {
   var navLinks = document.querySelectorAll('.site-nav__links a');
