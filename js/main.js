@@ -72,6 +72,7 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
     var el = dialog.querySelector('[data-bar="' + key + '"]');
     if (!el) return;
     var pct = Math.min(100, (value / max) * 100);
+    if (value > 0) pct = Math.max(pct, 3); // 값이 있으면 눈에 보이는 최소 너비 보장
     el.style.width = pct + '%';
     el.textContent = labelText;
   }
@@ -92,11 +93,11 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
     var scan3 = changes;
     var scanMax = Math.max(scan1, scan2, scan3, 1);
 
-    setBar('mem-1', mem1, memMax, mem1.toLocaleString() + '칸 상당');
+    setBar('mem-1', mem1, memMax, '약 ' + mem1.toLocaleString() + '칸');
     setBar('mem-2', mem2, memMax, mem2.toLocaleString() + '칸');
     setBar('mem-3', mem3, memMax, mem3.toLocaleString() + '칸');
 
-    setBar('scan-1', scan1, scanMax, scan1.toLocaleString() + '회 상당');
+    setBar('scan-1', scan1, scanMax, '약 ' + scan1.toLocaleString() + '회');
     setBar('scan-2', scan2, scanMax, scan2.toLocaleString() + '칸 전체 스캔');
     setBar('scan-3', scan3, scanMax, scan3.toLocaleString() + '건');
   }
