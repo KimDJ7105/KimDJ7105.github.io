@@ -337,19 +337,27 @@
         </div>
         <div class="pipeline-canvas" id="pipeline-canvas">
           <div class="pipeline-track"></div>
-          <div class="pipeline-node pipeline-node--endpoint" style="left:4%">유저</div>
-          <div class="pipeline-node pipeline-node--endpoint" style="left:18%">LLM</div>
-          <div class="pipeline-node pipeline-node--stage" style="left:34%">1. 항목 단위 검사<span>이상 항목 제외</span></div>
-          <div class="pipeline-node pipeline-node--stage" style="left:50%">2. 호출 실패·지연<span>이번 주기 건너뜀</span></div>
-          <div class="pipeline-node pipeline-node--stage" style="left:66%">3. 주문 변환<span>단위 스냅(필터 아님)</span></div>
-          <div class="pipeline-node pipeline-node--stage" style="left:82%">4. 서버 공통 검증<span>400 거부</span></div>
+
+          <div class="pipeline-node pipeline-node--data" style="left:4%">
+            <strong>입력 데이터</strong>
+            <code>{market, prices[]}</code>
+          </div>
+
+          <div class="pipeline-node pipeline-node--endpoint" style="left:20%">LLM</div>
+          <div class="pipeline-io-label" style="left:20%">출력(JSON): market·side·price·quantity</div>
+
+          <div class="pipeline-node pipeline-node--stage" style="left:38%">1. 항목 단위 검사<span>enum·가격 오류 제외</span></div>
+          <div class="pipeline-node pipeline-node--stage" style="left:52%">2. 호출 실패·지연<span>이번 틱 건너뜀</span></div>
+          <div class="pipeline-node pipeline-node--stage" style="left:66%">3. 주문 변환<span>가격 단위 스냅</span></div>
+          <div class="pipeline-node pipeline-node--stage" style="left:80%">4. 서버 공통 검증<span>마켓코드 등 재검증</span></div>
+
           <div class="pipeline-node pipeline-node--endpoint" id="pipeline-server" style="left:96%">Server</div>
         </div>
         <div class="pipeline-legend">
           <span><i class="dot dot--pass"></i>통과</span>
-          <span><i class="dot dot--drop"></i>탈락</span>
+          <span><i class="dot dot--drop"></i>탈락(사유 표시)</span>
         </div>
-        <p class="demo-dialog__note">점 하나는 LLM이 생성한 주문 1건을 뜻하는 단순화 모델이며, 각 단계의 통과·탈락 비율은 실제 트래픽 분포를 그대로 반영한 수치가 아니다.</p>
+        <p class="demo-dialog__note">점 하나는 LLM이 한 틱에 생성한 주문 결정 1건을 뜻하는 단순화 모델이며, 각 단계의 통과·탈락 비율은 실제 트래픽 분포를 그대로 반영한 수치가 아니다.</p>
       </dialog>
 
       <h3>문제 해결 사례 — 배포 환경에서만 터진 리밸런스 무한 루프</h3>

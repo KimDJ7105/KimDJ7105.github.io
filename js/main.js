@@ -129,16 +129,73 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   var canvas = dialog.querySelector('#pipeline-canvas');
   var serverNode = dialog.querySelector('#pipeline-server');
 
-  // 단계별 x좌표(%)와 탈락 확률 — 3단계(주문 변환)는 필터링이 아니라 값 변환만 하므로 탈락 없음
-  var CHECKPOINTS = [
-    { x: 34, dropRate: 0.22 },
-    { x: 50, dropRate: 0.12 },
-    { x: 66, dropRate: 0 },
-    { x: 82, dropRate: 0.1 }
-  ];
+  var MARKETS = ['BTC', 'ETH', 'XRP'];
   var START_X = 4;
   var END_X = 96;
-  var SPEED = 0.4; // % / frame
+  var SPEED = 0.22; // % / frame
+  var SPAWN_INTERVAL = 1300;
+
+  function updateLabel(p) {
+    p.el.textContent = p.market + ' ' + p.side + ' ' + p.price.toLocaleString() + '원';
+  }
+
+  // 입력({market, prices[]})이 LLM을 거쳐 결정(JSON)으로 바뀌는 지점.
+  // 항목 단위 검사가 못 잡는 "환각 마켓 코드"는 fakecode로 별도 표시해 4단계에서만 걸리게 한다.
+  function handleLlm(p) {
+    var r = Math.random();
+    if (r < 0.1) p.invalidKind = 'enum';
+    else if (r < 0.18) p.invalidKind = 'price';
+    else if (r < 0.3) p.invalidKind = 'callfail';
+    else if (r < 0.35) p.invalidKind = 'fakecode';
+    else p.invalidKind = 'none';
+
+    p.market = p.invalidKind === 'fakecode' ? 'FAKE' : MARKETS[Math.floor(Math.random() * MARKETS.length)];
+    p.side = p.invalidKind === 'enum' ? 'HOLD' : (Math.random() < 0.5 ? 'BUY' : 'SELL');
+    p.price = p.invalidKind === 'price' ? -Math.floor(Math.random() * 1000) : Math.floor(Math.random() * 9000000) + 100000;
+
+    p.el.classList.add('is-decision');
+    updateLabel(p);
+    return false;
+  }
+
+  function handleStage1(p) {
+    if (p.invalidKind === 'enum' || p.invalidKind === 'price') {
+      dropParticle(p, p.invalidKind === 'enum' ? 'side 오류' : '가격 오류');
+      return true;
+    }
+    return false;
+  }
+
+  function handleStage2(p) {
+    if (p.invalidKind === 'callfail') {
+      dropParticle(p, '호출 타임아웃');
+      return true;
+    }
+    return false;
+  }
+
+  function handleStage3(p) {
+    // 필터링 없음 — 호가 단위로 가격만 스냅해서 변환을 눈으로 보여준다
+    p.price = Math.round(p.price / 1000) * 1000;
+    updateLabel(p);
+    return false;
+  }
+
+  function handleStage4(p) {
+    if (p.invalidKind === 'fakecode') {
+      dropParticle(p, '마켓코드 오류');
+      return true;
+    }
+    return false;
+  }
+
+  var CHECKPOINTS = [
+    { x: 20, handle: handleLlm },
+    { x: 38, handle: handleStage1 },
+    { x: 52, handle: handleStage2 },
+    { x: 66, handle: handleStage3 },
+    { x: 80, handle: handleStage4 }
+  ];
 
   var particles = [];
   var rafId = null;
@@ -148,13 +205,15 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
     var el = document.createElement('div');
     el.className = 'pipeline-particle';
     el.style.left = START_X + '%';
+    el.textContent = '요청';
     canvas.appendChild(el);
     particles.push({ el: el, x: START_X, nextCheckpoint: 0, state: 'moving' });
   }
 
-  function dropParticle(p) {
+  function dropParticle(p, reasonText) {
     p.state = 'falling';
     p.el.classList.add('is-drop');
+    p.el.textContent = reasonText;
     p.el.style.top = '85%';
     p.el.style.opacity = '0';
     setTimeout(function () {
@@ -179,10 +238,7 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
       var cp = CHECKPOINTS[p.nextCheckpoint];
       if (cp && p.x >= cp.x) {
         p.nextCheckpoint++;
-        if (cp.dropRate > 0 && Math.random() < cp.dropRate) {
-          dropParticle(p);
-          continue;
-        }
+        if (cp.handle(p)) continue;
       }
       if (p.x >= END_X) {
         arriveParticle(p);
@@ -197,7 +253,7 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   function start() {
     if (rafId) return;
     spawnParticle();
-    spawnTimer = setInterval(spawnParticle, 500);
+    spawnTimer = setInterval(spawnParticle, SPAWN_INTERVAL);
     rafId = requestAnimationFrame(step);
   }
 
