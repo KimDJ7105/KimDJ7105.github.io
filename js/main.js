@@ -129,30 +129,42 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   var canvas = dialog.querySelector('#pipeline-canvas');
   var serverNode = dialog.querySelector('#pipeline-server');
 
-  var MARKETS = ['BTC', 'ETH', 'XRP'];
-  var START_X = 4;
-  var END_X = 96;
-  var SPEED = 0.22; // % / frame
-  var SPAWN_INTERVAL = 1700;
+  var inputNode = dialog.querySelector('#pipeline-input');
+  var llmNode = dialog.querySelector('#pipeline-llm');
+  var stage1Node = dialog.querySelector('#pipeline-stage-1');
+  var stage2Node = dialog.querySelector('#pipeline-stage-2');
+  var stage3Node = dialog.querySelector('#pipeline-stage-3');
+  var stage4Node = dialog.querySelector('#pipeline-stage-4');
+
+  var START_X = 9;
+  var END_X = 93;
+  var SPEED = 0.3; // % / frame
+  var SPAWN_INTERVAL = 2500;
+
+  // 정상 매수 → 정상 매도 → 비정상 4종(항목검사·항목검사·호출실패·서버검증)을 고정 순서로 반복
+  var SCRIPT = [
+    { market: 'BTC', side: 'BUY', price: 83000000, invalidKind: 'none' },
+    { market: 'ETH', side: 'SELL', price: 4500000, invalidKind: 'none' },
+    { market: 'XRP', side: 'HOLD', price: 900, invalidKind: 'enum' },
+    { market: 'BTC', side: 'SELL', price: -500, invalidKind: 'price' },
+    { market: 'ETH', side: 'BUY', price: 4300000, invalidKind: 'callfail' },
+    { market: 'FAKE', side: 'BUY', price: 1200000, invalidKind: 'fakecode' }
+  ];
+  var scriptIndex = 0;
 
   function updateLabel(p) {
     p.el.textContent = p.market + ' ' + p.side + ' ' + p.price.toLocaleString() + '원';
   }
 
+  function highlightNode(nodeEl, p) {
+    if (!nodeEl) return;
+    var cls = p.invalidKind === 'none' ? 'is-hit-pass' : 'is-hit-fail';
+    nodeEl.classList.add(cls);
+    setTimeout(function () { nodeEl.classList.remove(cls); }, 700);
+  }
+
   // 입력({market, prices[]})이 LLM을 거쳐 결정(JSON)으로 바뀌는 지점.
-  // 항목 단위 검사가 못 잡는 "환각 마켓 코드"는 fakecode로 별도 표시해 4단계에서만 걸리게 한다.
   function handleLlm(p) {
-    var r = Math.random();
-    if (r < 0.1) p.invalidKind = 'enum';
-    else if (r < 0.18) p.invalidKind = 'price';
-    else if (r < 0.3) p.invalidKind = 'callfail';
-    else if (r < 0.35) p.invalidKind = 'fakecode';
-    else p.invalidKind = 'none';
-
-    p.market = p.invalidKind === 'fakecode' ? 'FAKE' : MARKETS[Math.floor(Math.random() * MARKETS.length)];
-    p.side = p.invalidKind === 'enum' ? 'HOLD' : (Math.random() < 0.5 ? 'BUY' : 'SELL');
-    p.price = p.invalidKind === 'price' ? -Math.floor(Math.random() * 1000) : Math.floor(Math.random() * 9000000) + 100000;
-
     p.el.classList.add('is-decision');
     updateLabel(p);
     return false;
@@ -190,11 +202,11 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   }
 
   var CHECKPOINTS = [
-    { x: 20, handle: handleLlm },
-    { x: 38, handle: handleStage1 },
-    { x: 52, handle: handleStage2 },
-    { x: 66, handle: handleStage3 },
-    { x: 80, handle: handleStage4 }
+    { x: 24, node: llmNode, handle: handleLlm },
+    { x: 40, node: stage1Node, handle: handleStage1 },
+    { x: 53, node: stage2Node, handle: handleStage2 },
+    { x: 66, node: stage3Node, handle: handleStage3 },
+    { x: 79, node: stage4Node, handle: handleStage4 }
   ];
 
   var particles = [];
@@ -202,12 +214,27 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   var spawnTimer = null;
 
   function spawnParticle() {
+    var data = SCRIPT[scriptIndex % SCRIPT.length];
+    scriptIndex++;
+
     var el = document.createElement('div');
     el.className = 'pipeline-particle';
     el.style.left = START_X + '%';
     el.textContent = '요청';
     canvas.appendChild(el);
-    particles.push({ el: el, x: START_X, nextCheckpoint: 0, state: 'moving' });
+
+    var p = {
+      el: el,
+      x: START_X,
+      nextCheckpoint: 0,
+      state: 'moving',
+      market: data.market,
+      side: data.side,
+      price: data.price,
+      invalidKind: data.invalidKind
+    };
+    particles.push(p);
+    highlightNode(inputNode, p);
   }
 
   function dropParticle(p, reasonText) {
@@ -219,14 +246,13 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
     setTimeout(function () {
       p.el.remove();
       p.state = 'removed';
-    }, 400);
+    }, 2300);
   }
 
   function arriveParticle(p) {
     p.state = 'removed';
     p.el.remove();
-    serverNode.classList.add('is-pulse');
-    setTimeout(function () { serverNode.classList.remove('is-pulse'); }, 250);
+    highlightNode(serverNode, p);
   }
 
   function step() {
@@ -238,6 +264,7 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
       var cp = CHECKPOINTS[p.nextCheckpoint];
       if (cp && p.x >= cp.x) {
         p.nextCheckpoint++;
+        highlightNode(cp.node, p);
         if (cp.handle(p)) continue;
       }
       if (p.x >= END_X) {
@@ -252,6 +279,7 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
 
   function start() {
     if (rafId) return;
+    scriptIndex = 0;
     spawnParticle();
     spawnTimer = setInterval(spawnParticle, SPAWN_INTERVAL);
     rafId = requestAnimationFrame(step);

@@ -290,7 +290,7 @@ th { color: var(--color-muted); font-weight: 600; }
   margin: 0.25rem 0 0.75rem;
   background: var(--color-surface);
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
 }
 .pipeline-track {
   position: absolute;
@@ -319,15 +319,27 @@ th { color: var(--color-muted); font-weight: 600; }
   border: 1px solid var(--color-text);
   border-radius: 6px;
   background: var(--color-bg);
-  transition: box-shadow 0.2s ease;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
-.pipeline-node--endpoint.is-pulse { box-shadow: 0 0 0 5px rgba(36, 84, 255, 0.25); }
 .pipeline-node--data {
   text-align: left;
   padding: 0.55rem 0.85rem;
   border: 1px solid var(--color-border);
   border-radius: 6px;
   background: var(--color-bg);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.pipeline-node--endpoint.is-hit-pass,
+.pipeline-node--stage.is-hit-pass,
+.pipeline-node--data.is-hit-pass {
+  box-shadow: 0 0 0 4px rgba(36, 84, 255, 0.3);
+  border-color: var(--color-accent);
+}
+.pipeline-node--endpoint.is-hit-fail,
+.pipeline-node--stage.is-hit-fail,
+.pipeline-node--data.is-hit-fail {
+  box-shadow: 0 0 0 4px rgba(201, 68, 68, 0.3);
+  border-color: #c94444;
 }
 .pipeline-node--data strong { display: block; font-size: 0.95rem; }
 .pipeline-node--data code {
@@ -351,6 +363,7 @@ th { color: var(--color-muted); font-weight: 600; }
   border: 1px solid var(--color-border);
   border-radius: 6px;
   background: var(--color-bg);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .pipeline-node--stage span { display: block; color: var(--color-muted); font-weight: 400; font-size: 0.8rem; margin-top: 0.25rem; }
 .pipeline-particle {
@@ -368,7 +381,10 @@ th { color: var(--color-muted); font-weight: 600; }
   z-index: 2;
 }
 .pipeline-particle.is-decision { background: var(--color-accent); }
-.pipeline-particle.is-drop { background: #c94444; }
+.pipeline-particle.is-drop {
+  background: #c94444;
+  transition: top 1.4s ease, opacity 1.4s ease 0.8s;
+}
 .pipeline-legend {
   display: flex;
   gap: 1.25rem;
