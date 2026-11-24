@@ -133,7 +133,7 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   var START_X = 4;
   var END_X = 96;
   var SPEED = 0.22; // % / frame
-  var SPAWN_INTERVAL = 1300;
+  var SPAWN_INTERVAL = 1700;
 
   function updateLabel(p) {
     p.el.textContent = p.market + ' ' + p.side + ' ' + p.price.toLocaleString() + '원';
@@ -214,7 +214,7 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
     p.state = 'falling';
     p.el.classList.add('is-drop');
     p.el.textContent = reasonText;
-    p.el.style.top = '85%';
+    p.el.style.top = '96%';
     p.el.style.opacity = '0';
     setTimeout(function () {
       p.el.remove();
