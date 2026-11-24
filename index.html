@@ -338,20 +338,20 @@
         <div class="pipeline-canvas" id="pipeline-canvas">
           <div class="pipeline-track"></div>
 
-          <div class="pipeline-node pipeline-node--data" id="pipeline-input" style="left:9%">
+          <div class="pipeline-node pipeline-node--data" id="pipeline-input" style="left:2%">
             <strong>입력 데이터</strong>
             <code>{market, prices[]}</code>
           </div>
 
-          <div class="pipeline-node pipeline-node--endpoint" id="pipeline-llm" style="left:24%">LLM</div>
-          <div class="pipeline-io-label" style="left:24%">출력(JSON): market·side·price·quantity</div>
+          <div class="pipeline-node pipeline-node--endpoint" id="pipeline-llm" style="left:17%">LLM</div>
+          <div class="pipeline-io-label" style="left:17%">출력(JSON): market·side·price·quantity</div>
 
-          <div class="pipeline-node pipeline-node--stage" id="pipeline-stage-1" style="left:40%">1. 항목 단위 검사<span>enum·가격 오류 제외</span></div>
-          <div class="pipeline-node pipeline-node--stage" id="pipeline-stage-2" style="left:53%">2. 호출 실패·지연<span>이번 틱 건너뜀</span></div>
+          <div class="pipeline-node pipeline-node--stage" id="pipeline-stage-1" style="left:32%">1. 항목 단위 검사<span>enum·가격 오류 제외</span></div>
+          <div class="pipeline-node pipeline-node--stage" id="pipeline-stage-2" style="left:49%">2. 호출 실패·지연<span>이번 틱 건너뜀</span></div>
           <div class="pipeline-node pipeline-node--stage" id="pipeline-stage-3" style="left:66%">3. 주문 변환<span>가격 단위 스냅</span></div>
-          <div class="pipeline-node pipeline-node--stage" id="pipeline-stage-4" style="left:79%">4. 서버 공통 검증<span>마켓코드 등 재검증</span></div>
+          <div class="pipeline-node pipeline-node--stage" id="pipeline-stage-4" style="left:83%">4. 서버 공통 검증<span>마켓코드 등 재검증</span></div>
 
-          <div class="pipeline-node pipeline-node--endpoint" id="pipeline-server" style="left:93%">Server</div>
+          <div class="pipeline-node pipeline-node--endpoint" id="pipeline-server" style="left:98%">Server</div>
         </div>
         <div class="pipeline-legend">
           <span><i class="dot dot--pass"></i>통과</span>
