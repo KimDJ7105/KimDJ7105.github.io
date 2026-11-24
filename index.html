@@ -326,7 +326,31 @@
         </tbody>
       </table>
 
+      <p class="demo-trigger-row"><button type="button" class="demo-trigger" data-dialog="truss-pipeline-demo">파이프라인 흐름 보기</button></p>
+
       <p>마지막 방어선을 LLM 전용이 아니라 규칙 봇·리플레이 엔진과 같은 공통 검증에 둬서, 주문이 어디서 오든 같은 기준으로 걸러지게 했다.</p>
+
+      <dialog id="truss-pipeline-demo" class="demo-dialog demo-dialog--wide">
+        <div class="demo-dialog__header">
+          <h4>LLM 출력 검증 파이프라인 흐름</h4>
+          <button type="button" class="demo-dialog__close" aria-label="닫기">×</button>
+        </div>
+        <div class="pipeline-canvas" id="pipeline-canvas">
+          <div class="pipeline-track"></div>
+          <div class="pipeline-node pipeline-node--endpoint" style="left:4%">유저</div>
+          <div class="pipeline-node pipeline-node--endpoint" style="left:18%">LLM</div>
+          <div class="pipeline-node pipeline-node--stage" style="left:34%">1. 항목 단위 검사<span>이상 항목 제외</span></div>
+          <div class="pipeline-node pipeline-node--stage" style="left:50%">2. 호출 실패·지연<span>이번 주기 건너뜀</span></div>
+          <div class="pipeline-node pipeline-node--stage" style="left:66%">3. 주문 변환<span>단위 스냅(필터 아님)</span></div>
+          <div class="pipeline-node pipeline-node--stage" style="left:82%">4. 서버 공통 검증<span>400 거부</span></div>
+          <div class="pipeline-node pipeline-node--endpoint" id="pipeline-server" style="left:96%">Server</div>
+        </div>
+        <div class="pipeline-legend">
+          <span><i class="dot dot--pass"></i>통과</span>
+          <span><i class="dot dot--drop"></i>탈락</span>
+        </div>
+        <p class="demo-dialog__note">점 하나는 LLM이 생성한 주문 1건을 뜻하는 단순화 모델이며, 각 단계의 통과·탈락 비율은 실제 트래픽 분포를 그대로 반영한 수치가 아니다.</p>
+      </dialog>
 
       <h3>문제 해결 사례 — 배포 환경에서만 터진 리밸런스 무한 루프</h3>
       <p class="project-message">배포 환경에서 반복되던 문제의 원인을 추적해 해결했다.</p>

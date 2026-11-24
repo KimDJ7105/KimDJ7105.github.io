@@ -119,6 +119,110 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   changesInput.addEventListener('input', render);
 })();
 
+// Truss LLM 출력 검증 파이프라인 흐름 데모 (모달)
+(function () {
+  var dialog = document.getElementById('truss-pipeline-demo');
+  if (!dialog) return;
+
+  var openBtn = document.querySelector('[data-dialog="truss-pipeline-demo"]');
+  var closeBtn = dialog.querySelector('.demo-dialog__close');
+  var canvas = dialog.querySelector('#pipeline-canvas');
+  var serverNode = dialog.querySelector('#pipeline-server');
+
+  // 단계별 x좌표(%)와 탈락 확률 — 3단계(주문 변환)는 필터링이 아니라 값 변환만 하므로 탈락 없음
+  var CHECKPOINTS = [
+    { x: 34, dropRate: 0.22 },
+    { x: 50, dropRate: 0.12 },
+    { x: 66, dropRate: 0 },
+    { x: 82, dropRate: 0.1 }
+  ];
+  var START_X = 4;
+  var END_X = 96;
+  var SPEED = 0.4; // % / frame
+
+  var particles = [];
+  var rafId = null;
+  var spawnTimer = null;
+
+  function spawnParticle() {
+    var el = document.createElement('div');
+    el.className = 'pipeline-particle';
+    el.style.left = START_X + '%';
+    canvas.appendChild(el);
+    particles.push({ el: el, x: START_X, nextCheckpoint: 0, state: 'moving' });
+  }
+
+  function dropParticle(p) {
+    p.state = 'falling';
+    p.el.classList.add('is-drop');
+    p.el.style.top = '85%';
+    p.el.style.opacity = '0';
+    setTimeout(function () {
+      p.el.remove();
+      p.state = 'removed';
+    }, 400);
+  }
+
+  function arriveParticle(p) {
+    p.state = 'removed';
+    p.el.remove();
+    serverNode.classList.add('is-pulse');
+    setTimeout(function () { serverNode.classList.remove('is-pulse'); }, 250);
+  }
+
+  function step() {
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      if (p.state !== 'moving') continue;
+
+      p.x += SPEED;
+      var cp = CHECKPOINTS[p.nextCheckpoint];
+      if (cp && p.x >= cp.x) {
+        p.nextCheckpoint++;
+        if (cp.dropRate > 0 && Math.random() < cp.dropRate) {
+          dropParticle(p);
+          continue;
+        }
+      }
+      if (p.x >= END_X) {
+        arriveParticle(p);
+        continue;
+      }
+      p.el.style.left = p.x + '%';
+    }
+    particles = particles.filter(function (p) { return p.state !== 'removed'; });
+    rafId = requestAnimationFrame(step);
+  }
+
+  function start() {
+    if (rafId) return;
+    spawnParticle();
+    spawnTimer = setInterval(spawnParticle, 500);
+    rafId = requestAnimationFrame(step);
+  }
+
+  function stop() {
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+    clearInterval(spawnTimer);
+    particles.forEach(function (p) { p.el.remove(); });
+    particles = [];
+  }
+
+  if (openBtn) {
+    openBtn.addEventListener('click', function () {
+      if (dialog.open) return;
+      dialog.showModal();
+      start();
+    });
+  }
+  if (closeBtn) closeBtn.addEventListener('click', function () { dialog.close(); });
+  dialog.addEventListener('click', function (e) {
+    if (e.target === dialog) dialog.close();
+  });
+  dialog.addEventListener('close', stop);
+})();
+
 // 상단 네비 현재 위치 강조 (scrollspy)
 (function () {
   var navLinks = document.querySelectorAll('.site-nav__links a');
