@@ -57,6 +57,66 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   });
 });
 
+// GeoIP 타일 동기화 3안 비교 데모 (모달)
+(function () {
+  var dialog = document.getElementById('tile-sync-demo');
+  if (!dialog) return;
+
+  var openBtn = document.querySelector('[data-dialog="tile-sync-demo"]');
+  var closeBtn = dialog.querySelector('.demo-dialog__close');
+  var usersInput = dialog.querySelector('#demo-users');
+  var changesInput = dialog.querySelector('#demo-changes');
+  var GRID = 11250;
+
+  function setBar(key, value, max, labelText) {
+    var el = dialog.querySelector('[data-bar="' + key + '"]');
+    if (!el) return;
+    var pct = Math.min(100, (value / max) * 100);
+    el.style.width = pct + '%';
+    el.textContent = labelText;
+  }
+
+  function render() {
+    var users = Number(usersInput.value);
+    var changes = Number(changesInput.value);
+    dialog.querySelector('[data-out="users"]').textContent = users;
+    dialog.querySelector('[data-out="changes"]').textContent = changes;
+
+    var mem1 = users * changes;
+    var mem2 = GRID;
+    var mem3 = changes;
+    var memMax = Math.max(mem1, mem2, mem3, 1);
+
+    var scan1 = users * changes;
+    var scan2 = GRID;
+    var scan3 = changes;
+    var scanMax = Math.max(scan1, scan2, scan3, 1);
+
+    setBar('mem-1', mem1, memMax, mem1.toLocaleString() + '칸 상당');
+    setBar('mem-2', mem2, memMax, mem2.toLocaleString() + '칸');
+    setBar('mem-3', mem3, memMax, mem3.toLocaleString() + '칸');
+
+    setBar('scan-1', scan1, scanMax, scan1.toLocaleString() + '회 상당');
+    setBar('scan-2', scan2, scanMax, scan2.toLocaleString() + '칸 전체 스캔');
+    setBar('scan-3', scan3, scanMax, scan3.toLocaleString() + '건');
+  }
+
+  if (openBtn) {
+    openBtn.addEventListener('click', function () {
+      render();
+      dialog.showModal();
+    });
+  }
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function () { dialog.close(); });
+  }
+  dialog.addEventListener('click', function (e) {
+    if (e.target === dialog) dialog.close();
+  });
+  usersInput.addEventListener('input', render);
+  changesInput.addEventListener('input', render);
+})();
+
 // 상단 네비 현재 위치 강조 (scrollspy)
 (function () {
   var navLinks = document.querySelectorAll('.site-nav__links a');

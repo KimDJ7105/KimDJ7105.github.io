@@ -152,7 +152,10 @@
         <figcaption>맵 확인 화면</figcaption>
       </figure>
 
-      <h3>AI 활용 사례 — 타일(그리드) 상태 동기화 최적화</h3>
+      <h3 class="heading-with-action">
+        AI 활용 사례 — 타일(그리드) 상태 동기화 최적화
+        <button type="button" class="demo-trigger" data-dialog="tile-sync-demo">세 가지 안 비교 보기</button>
+      </h3>
       <p class="project-message">타일 상태를 효율적으로 동기화하는 방법을 여러 안으로 비교해가며 좁혀갔다.</p>
       <p>초기 구조는 타일이 칠해질 때마다 모든 접속자에게 즉시 브로드캐스트하는 방식이었다. 접속자가 증가할수록 화면 밖 유저에게까지 변경 사항을 전송하는 것이 비효율적이라 판단해 Claude Code와 함께 개선 방향을 검토했다.</p>
       <p><strong>AI가 제안한 1차 개선안</strong>: AOI 밖에서 발생한 변경 사항을 유저별 목록에 저장하고 주기적으로 전송하는 방식이다. → 접속자 수와 타일 변경량에 비례해 메모리 사용량이 증가하는 구조적 문제를 확인, 유저별 목록을 제거하고 전역 상태로 관리하도록 설계를 바꿨다.</p>
@@ -170,6 +173,33 @@
           <tr><th scope="row">핵심 한계</th><td>접속자 수에 비례해 메모리 무한정 증가</td><td>메모리는 해결됐지만 매 주기 고정 스캔 비용 발생</td><td>AOI 내부 정보로 이미 알고 있는 타일 상태도 전송</td></tr>
         </tbody>
       </table>
+
+      <dialog id="tile-sync-demo" class="demo-dialog">
+        <div class="demo-dialog__header">
+          <h4>유저 수·변경 타일 수에 따른 부담 비교</h4>
+          <button type="button" class="demo-dialog__close" aria-label="닫기">×</button>
+        </div>
+        <div class="demo-dialog__controls">
+          <label>접속자 수 — <output data-out="users">50</output>명
+            <input type="range" id="demo-users" min="1" max="200" value="50">
+          </label>
+          <label>동시에 변경되는 타일 수 — <output data-out="changes">20</output>개
+            <input type="range" id="demo-changes" min="1" max="200" value="20">
+          </label>
+        </div>
+        <div class="demo-chart">
+          <h5>추가 메모리</h5>
+          <div class="demo-bar-row"><span class="demo-bar-row__label">1차안</span><div class="demo-bar"><div class="demo-bar__fill" data-bar="mem-1"></div></div></div>
+          <div class="demo-bar-row"><span class="demo-bar-row__label">2차안</span><div class="demo-bar"><div class="demo-bar__fill" data-bar="mem-2"></div></div></div>
+          <div class="demo-bar-row"><span class="demo-bar-row__label">3차안</span><div class="demo-bar"><div class="demo-bar__fill" data-bar="mem-3"></div></div></div>
+
+          <h5>매 주기 스캔량</h5>
+          <div class="demo-bar-row"><span class="demo-bar-row__label">1차안</span><div class="demo-bar"><div class="demo-bar__fill" data-bar="scan-1"></div></div></div>
+          <div class="demo-bar-row"><span class="demo-bar-row__label">2차안</span><div class="demo-bar"><div class="demo-bar__fill" data-bar="scan-2"></div></div></div>
+          <div class="demo-bar-row"><span class="demo-bar-row__label">3차안</span><div class="demo-bar"><div class="demo-bar__fill" data-bar="scan-3"></div></div></div>
+        </div>
+        <p class="demo-dialog__note">그리드 전체 크기는 150×75(11,250칸)로 고정. 막대 길이는 세 안 사이의 상대적 비교용 단순화 모델이며, 실제 처리 시간을 나타내지 않는다.</p>
+      </dialog>
 
       <h3>문제 해결 사례 — 최적화 효과 검증과 잔여 병목</h3>
       <p class="project-message">최적화 효과를 측정해 남은 병목까지 찾아 해결했다.</p>
