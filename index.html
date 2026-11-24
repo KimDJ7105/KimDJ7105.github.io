@@ -584,6 +584,11 @@
           <button type="button" class="mode-toggle__btn" data-mode="after">변경 후 (shared_ptr)</button>
         </div>
         <div class="lifecycle-canvas" id="lifecycle-canvas">
+          <div class="lifecycle-result" id="lifecycle-result"></div>
+
+          <div class="lifecycle-bar-label">Session 객체 생존 구간</div>
+          <div class="lifecycle-bar-label lifecycle-bar-label--ext" id="lifecycle-ext-label" style="left:53%">콜백이 참조 보유 중(소멸 보류)</div>
+
           <div class="lifecycle-track"></div>
           <div class="lifecycle-bar" id="lifecycle-bar"></div>
           <div class="lifecycle-bar lifecycle-bar--extended" id="lifecycle-bar-ext"></div>
@@ -597,8 +602,6 @@
             <div class="lifecycle-marker__tick"></div>
             <div class="lifecycle-marker__label">콜백 실행<span>(패킷 송신 완료)</span></div>
           </div>
-
-          <div class="lifecycle-result" id="lifecycle-result"></div>
         </div>
         <div class="pipeline-legend">
           <span><i class="dot dot--pass"></i>Session 생존 구간</span>

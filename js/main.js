@@ -617,6 +617,7 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   var markerLogout = dialog.querySelector('#lifecycle-marker-logout');
   var markerCallback = dialog.querySelector('#lifecycle-marker-callback');
   var resultEl = dialog.querySelector('#lifecycle-result');
+  var extLabel = dialog.querySelector('#lifecycle-ext-label');
 
   var LOOP_MS = 4500;
   var LOGOUT_PCT = 36;
@@ -657,8 +658,10 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
       var extFrac = Math.min(progress, AFTER_END_PCT / 100);
       barExt.style.left = LOGOUT_PCT + '%';
       barExt.style.width = Math.max(0, (extFrac * 100) - LOGOUT_PCT) + '%';
+      extLabel.classList.add('is-shown');
     } else {
       barExt.style.width = '0%';
+      extLabel.classList.remove('is-shown');
     }
 
     playhead.style.left = (progress * 100) + '%';
