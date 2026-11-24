@@ -213,6 +213,7 @@ th { color: var(--color-muted); font-weight: 600; }
   color: var(--color-text);
   background: var(--color-bg);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  overflow: visible; /* 브라우저 기본 dialog 스타일(overflow:auto)이 내부 요소를 잘라내는 것 방지 */
 }
 .demo-dialog::backdrop { background: rgba(10, 10, 14, 0.55); }
 .demo-dialog__header {

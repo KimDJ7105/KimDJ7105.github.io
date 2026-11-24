@@ -136,8 +136,8 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   var stage3Node = dialog.querySelector('#pipeline-stage-3');
   var stage4Node = dialog.querySelector('#pipeline-stage-4');
 
-  var START_X = 2;
-  var END_X = 98;
+  var START_X = 7;
+  var END_X = 94;
   var SPEED = 0.3; // % / frame
   var SPAWN_INTERVAL = 2500;
 
@@ -202,11 +202,11 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   }
 
   var CHECKPOINTS = [
-    { x: 17, node: llmNode, handle: handleLlm },
-    { x: 32, node: stage1Node, handle: handleStage1 },
+    { x: 20, node: llmNode, handle: handleLlm },
+    { x: 33, node: stage1Node, handle: handleStage1 },
     { x: 49, node: stage2Node, handle: handleStage2 },
-    { x: 66, node: stage3Node, handle: handleStage3 },
-    { x: 83, node: stage4Node, handle: handleStage4 }
+    { x: 65, node: stage3Node, handle: handleStage3 },
+    { x: 81, node: stage4Node, handle: handleStage4 }
   ];
 
   var particles = [];
