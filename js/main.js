@@ -142,18 +142,19 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   var SPAWN_INTERVAL = 2500;
 
   // 정상 매수 → 정상 매도 → 비정상 4종(항목검사·항목검사·호출실패·서버검증)을 고정 순서로 반복
+  // 실제 출력 스키마(market/side/price/quantity)와 동일한 필드로 구성
   var SCRIPT = [
-    { market: 'BTC', side: 'BUY', price: 83000000, invalidKind: 'none' },
-    { market: 'ETH', side: 'SELL', price: 4500000, invalidKind: 'none' },
-    { market: 'XRP', side: 'HOLD', price: 900, invalidKind: 'enum' },
-    { market: 'BTC', side: 'SELL', price: -500, invalidKind: 'price' },
-    { market: 'ETH', side: 'BUY', price: 4300000, invalidKind: 'callfail' },
-    { market: 'FAKE', side: 'BUY', price: 1200000, invalidKind: 'fakecode' }
+    { market: 'BTC', side: 'BUY', price: 83000000, quantity: 0.05, invalidKind: 'none' },
+    { market: 'ETH', side: 'SELL', price: 4500000, quantity: 1.2, invalidKind: 'none' },
+    { market: 'XRP', side: 'HOLD', price: 900, quantity: 500, invalidKind: 'enum' },
+    { market: 'BTC', side: 'SELL', price: -500, quantity: 0.1, invalidKind: 'price' },
+    { market: 'ETH', side: 'BUY', price: 4300000, quantity: 0.8, invalidKind: 'callfail' },
+    { market: 'FAKE', side: 'BUY', price: 1200000, quantity: 3, invalidKind: 'fakecode' }
   ];
   var scriptIndex = 0;
 
   function updateLabel(p) {
-    p.el.textContent = p.market + ' ' + p.side + ' ' + p.price.toLocaleString() + '원';
+    p.el.textContent = p.market + ' ' + p.side + ' ' + p.price.toLocaleString() + '원 · ' + p.quantity + '개';
   }
 
   function highlightNode(nodeEl, p) {
@@ -231,6 +232,7 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
       market: data.market,
       side: data.side,
       price: data.price,
+      quantity: data.quantity,
       invalidKind: data.invalidKind
     };
     particles.push(p);
