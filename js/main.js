@@ -372,13 +372,16 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
     setTimeout(function () { redisEl.classList.remove('is-active'); }, 700);
   }
 
-  function pickHealthyPod(excludeIndex) {
-    for (var tries = 0; tries < 8; tries++) {
-      var idx = rrPointer % 4;
-      rrPointer++;
-      if (idx !== excludeIndex) return idx;
-    }
-    return (excludeIndex + 1) % 4;
+  // 살아있는 Pod 중 현재 유저가 가장 적은 곳으로 보낸다(로드밸런싱). 동률이면 번갈아가며 분산.
+  function pickLeastLoadedPod(excludeIndex) {
+    var candidates = [0, 1, 2, 3].filter(function (i) { return i !== excludeIndex; });
+    candidates.sort(function (a, b) {
+      var diff = pods[a].users.length - pods[b].users.length;
+      if (diff !== 0) return diff;
+      return ((rrPointer + a) % 4) - ((rrPointer + b) % 4);
+    });
+    rrPointer++;
+    return candidates[0];
   }
 
   function init() {
@@ -421,7 +424,7 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
       chip.el.style.top = redisCenter.y + 'px';
 
       setTimeout(function () {
-        var destIndex = pickHealthyPod(podIndex);
+        var destIndex = pickLeastLoadedPod(podIndex);
         var destSlot = pods[destIndex].users.length;
         pods[destIndex].users.push(chipId);
         chip.podIndex = destIndex;
