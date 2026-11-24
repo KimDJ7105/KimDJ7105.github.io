@@ -535,6 +535,91 @@ th { color: var(--color-muted); font-weight: 600; }
 }
 .thread-pulse.is-wait { background: #c94444; }
 
+/* ===== Session 생명주기 vs 콜백 타임라인 데모 ===== */
+.lifecycle-canvas {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  margin: 0.5rem 0 0.75rem;
+}
+.lifecycle-track {
+  position: absolute;
+  top: 70px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-border);
+}
+.lifecycle-bar {
+  position: absolute;
+  top: 58px;
+  left: 0;
+  height: 24px;
+  width: 0%;
+  background: var(--color-accent);
+  border-radius: 4px;
+  z-index: 1;
+}
+.lifecycle-bar--extended {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--color-accent),
+    var(--color-accent) 6px,
+    rgba(36, 84, 255, 0.55) 6px,
+    rgba(36, 84, 255, 0.55) 12px
+  );
+  z-index: 0;
+}
+.lifecycle-playhead {
+  position: absolute;
+  top: 46px;
+  left: 0;
+  width: 2px;
+  height: 48px;
+  background: var(--color-text);
+  z-index: 2;
+}
+.lifecycle-marker {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 1;
+}
+.lifecycle-marker__tick {
+  width: 2px;
+  height: 70px;
+  background: var(--color-border);
+  margin: 0 auto;
+  transition: background 0.2s ease;
+}
+.lifecycle-marker__label {
+  margin-top: 86px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+.lifecycle-marker__label span { display: block; font-size: 0.7rem; font-weight: 400; color: var(--color-muted); }
+.lifecycle-marker.is-pass .lifecycle-marker__tick { background: var(--color-accent); }
+.lifecycle-marker.is-fail .lifecycle-marker__tick { background: #c94444; }
+.lifecycle-result {
+  position: absolute;
+  top: 136px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  white-space: nowrap;
+}
+.lifecycle-result.is-pass { background: rgba(36, 84, 255, 0.12); color: var(--color-accent); opacity: 1; }
+.lifecycle-result.is-fail { background: rgba(201, 68, 68, 0.12); color: #c94444; opacity: 1; }
+
 .shot-pair {
   margin: 1.5rem 0;
   text-align: center;

@@ -603,6 +603,118 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   dialog.addEventListener('close', stop);
 })();
 
+// Re:Walk Session 생명주기 vs 콜백 실행 시점 타임라인 데모 (모달)
+(function () {
+  var dialog = document.getElementById('lifecycle-demo');
+  if (!dialog) return;
+
+  var openBtn = document.querySelector('[data-dialog="lifecycle-demo"]');
+  var closeBtn = dialog.querySelector('.demo-dialog__close');
+  var modeButtons = dialog.querySelectorAll('.mode-toggle__btn');
+  var bar = dialog.querySelector('#lifecycle-bar');
+  var barExt = dialog.querySelector('#lifecycle-bar-ext');
+  var playhead = dialog.querySelector('#lifecycle-playhead');
+  var markerLogout = dialog.querySelector('#lifecycle-marker-logout');
+  var markerCallback = dialog.querySelector('#lifecycle-marker-callback');
+  var resultEl = dialog.querySelector('#lifecycle-result');
+
+  var LOOP_MS = 4500;
+  var LOGOUT_PCT = 36;
+  var CALLBACK_PCT = 62;
+  var AFTER_END_PCT = 70; // 콜백이 shared_ptr을 쥐고 있어 실제 소멸이 콜백 완료 직후로 늦춰짐
+
+  var mode = 'before';
+  var rafId = null;
+  var startTs = null;
+  var prevProgress = 0;
+  var loggedOutFired = false;
+  var callbackFired = false;
+
+  resultEl.style.left = CALLBACK_PCT + '%';
+
+  function resetCycleFlags() {
+    loggedOutFired = false;
+    callbackFired = false;
+    markerLogout.classList.remove('is-pass', 'is-fail');
+    markerCallback.classList.remove('is-pass', 'is-fail');
+    resultEl.classList.remove('is-pass', 'is-fail');
+    resultEl.textContent = '';
+  }
+
+  function frame(ts) {
+    if (startTs === null) startTs = ts;
+    var elapsed = (ts - startTs) % LOOP_MS;
+    var progress = elapsed / LOOP_MS;
+
+    if (progress < prevProgress) resetCycleFlags();
+    prevProgress = progress;
+
+    var barEndFrac = (mode === 'before' ? LOGOUT_PCT : AFTER_END_PCT) / 100;
+    var aliveFrac = Math.min(progress, barEndFrac);
+    bar.style.width = (aliveFrac * 100) + '%';
+
+    if (mode === 'after' && progress > LOGOUT_PCT / 100) {
+      var extFrac = Math.min(progress, AFTER_END_PCT / 100);
+      barExt.style.left = LOGOUT_PCT + '%';
+      barExt.style.width = Math.max(0, (extFrac * 100) - LOGOUT_PCT) + '%';
+    } else {
+      barExt.style.width = '0%';
+    }
+
+    playhead.style.left = (progress * 100) + '%';
+
+    if (!loggedOutFired && progress * 100 >= LOGOUT_PCT) {
+      loggedOutFired = true;
+      markerLogout.classList.add('is-pass');
+    }
+
+    if (!callbackFired && progress * 100 >= CALLBACK_PCT) {
+      callbackFired = true;
+      var safe = mode === 'after';
+      markerCallback.classList.add(safe ? 'is-pass' : 'is-fail');
+      resultEl.classList.add(safe ? 'is-pass' : 'is-fail');
+      resultEl.textContent = safe ? '정상 접근 — 콜백이 shared_ptr로 수명 연장' : 'Access Violation — 이미 소멸된 Session 참조';
+    }
+
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function start() {
+    if (rafId) return;
+    startTs = null;
+    prevProgress = 0;
+    resetCycleFlags();
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function stop() {
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+
+  modeButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      mode = btn.dataset.mode;
+      modeButtons.forEach(function (b) { b.classList.toggle('is-active', b === btn); });
+    });
+  });
+
+  if (openBtn) {
+    openBtn.addEventListener('click', function () {
+      if (dialog.open) return;
+      mode = 'before';
+      modeButtons.forEach(function (b) { b.classList.toggle('is-active', b.dataset.mode === 'before'); });
+      dialog.showModal();
+      start();
+    });
+  }
+  if (closeBtn) closeBtn.addEventListener('click', function () { dialog.close(); });
+  dialog.addEventListener('click', function (e) {
+    if (e.target === dialog) dialog.close();
+  });
+  dialog.addEventListener('close', stop);
+})();
+
 // 상단 네비 현재 위치 강조 (scrollspy)
 (function () {
   var navLinks = document.querySelectorAll('.site-nav__links a');
