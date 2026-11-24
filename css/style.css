@@ -407,6 +407,62 @@ th { color: var(--color-muted); font-weight: 600; }
 .dot--pass { background: var(--color-accent); }
 .dot--drop { background: #c94444; }
 
+/* ===== Pod 장애·재접속 흐름 데모 ===== */
+.pod-canvas {
+  position: relative;
+  width: 760px;
+  max-width: 100%;
+  height: 460px;
+  margin: 0.25rem auto 0.75rem;
+}
+.pod-box {
+  position: absolute;
+  width: 230px;
+  height: 150px;
+  box-sizing: border-box;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  padding: 0.5rem 0.6rem;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  z-index: 1;
+}
+.pod-box__title { font-weight: 700; font-size: 0.95rem; }
+.pod-box__status { font-size: 0.78rem; color: var(--color-muted); font-weight: 400; margin-left: 0.3rem; }
+.pod-box.is-down { background: #fdecec; border-color: #c94444; }
+.pod-box.is-down .pod-box__status { color: #c94444; font-weight: 700; }
+.pod-box.is-hit { box-shadow: 0 0 0 4px rgba(36, 84, 255, 0.3); border-color: var(--color-accent); }
+.redis-box {
+  position: absolute;
+  width: 160px;
+  box-sizing: border-box;
+  border: 1px solid var(--color-text);
+  border-radius: 8px;
+  background: var(--color-surface);
+  padding: 0.6rem 0.7rem;
+  font-size: 0.78rem;
+  transition: box-shadow 0.2s ease;
+  z-index: 1;
+}
+.redis-box__title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.35rem; text-align: center; }
+.redis-box ul { margin: 0; padding-left: 1.1rem; color: var(--color-muted); line-height: 1.5; }
+.redis-box.is-active { box-shadow: 0 0 0 5px rgba(36, 84, 255, 0.35); }
+.pod-user {
+  position: absolute;
+  width: 50px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: left 0.6s ease, top 0.6s ease;
+  z-index: 3;
+}
+
 .shot-pair {
   margin: 1.5rem 0;
   text-align: center;

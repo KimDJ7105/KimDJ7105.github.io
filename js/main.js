@@ -309,6 +309,162 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   dialog.addEventListener('close', stop);
 })();
 
+// 증강 오목 Pod 장애·재접속 흐름 데모 (모달)
+(function () {
+  var dialog = document.getElementById('pod-failover-demo');
+  if (!dialog) return;
+
+  var openBtn = document.querySelector('[data-dialog="pod-failover-demo"]');
+  var closeBtn = dialog.querySelector('.demo-dialog__close');
+  var canvas = dialog.querySelector('#pod-canvas');
+  var redisEl = dialog.querySelector('#pod-redis');
+
+  var PODS_PER_CYCLE_MS = 7000;
+  var USERS_PER_POD = 2;
+  var SLOT_W = 58, SLOT_H = 34, SLOT_GAP = 6, SLOT_COLS = 3;
+  var SLOT_START_X = 8, SLOT_START_Y = 34;
+
+  var podEls = [0, 1, 2, 3].map(function (i) { return dialog.querySelector('#pod-box-' + i); });
+  var pods = []; // { el, users: [chipId,...] }
+  var chips = {}; // id -> { el, podIndex }
+  var downTimer = null;
+  var rrPointer = 0;
+  var downIndex = 0;
+  var nextChipId = 1;
+
+  function slotPos(podIndex, slotIndex) {
+    var pod = podEls[podIndex];
+    var col = slotIndex % SLOT_COLS;
+    var row = Math.floor(slotIndex / SLOT_COLS);
+    return {
+      x: pod.offsetLeft + SLOT_START_X + col * (SLOT_W + SLOT_GAP),
+      y: pod.offsetTop + SLOT_START_Y + row * (SLOT_H + SLOT_GAP)
+    };
+  }
+
+  function placeChip(chipId, podIndex, slotIndex) {
+    var pos = slotPos(podIndex, slotIndex);
+    var chip = chips[chipId];
+    chip.el.style.left = pos.x + 'px';
+    chip.el.style.top = pos.y + 'px';
+  }
+
+  function createChip(podIndex, slotIndex) {
+    var id = nextChipId++;
+    var el = document.createElement('div');
+    el.className = 'pod-user';
+    el.textContent = 'U' + id;
+    canvas.appendChild(el);
+    chips[id] = { el: el, podIndex: podIndex };
+    pods[podIndex].users.push(id);
+    placeChip(id, podIndex, slotIndex);
+    return id;
+  }
+
+  function highlightPod(podIndex) {
+    var el = podEls[podIndex];
+    el.classList.add('is-hit');
+    setTimeout(function () { el.classList.remove('is-hit'); }, 700);
+  }
+
+  function flashRedis() {
+    redisEl.classList.add('is-active');
+    setTimeout(function () { redisEl.classList.remove('is-active'); }, 700);
+  }
+
+  function pickHealthyPod(excludeIndex) {
+    for (var tries = 0; tries < 8; tries++) {
+      var idx = rrPointer % 4;
+      rrPointer++;
+      if (idx !== excludeIndex) return idx;
+    }
+    return (excludeIndex + 1) % 4;
+  }
+
+  function init() {
+    pods = [0, 1, 2, 3].map(function (_, i) { return { el: podEls[i], users: [] }; });
+    canvas.querySelectorAll('.pod-user').forEach(function (el) { el.remove(); });
+    chips = {};
+    nextChipId = 1;
+    rrPointer = 0;
+    downIndex = 0;
+    podEls.forEach(function (el) {
+      el.classList.remove('is-down', 'is-hit');
+      el.querySelector('.pod-box__status').textContent = '정상';
+    });
+    for (var p = 0; p < 4; p++) {
+      for (var s = 0; s < USERS_PER_POD; s++) createChip(p, s);
+    }
+  }
+
+  function triggerDown() {
+    var podIndex = downIndex;
+    downIndex = (downIndex + 1) % 4;
+
+    var pod = pods[podIndex];
+    var podEl = podEls[podIndex];
+    podEl.classList.add('is-down');
+    podEl.querySelector('.pod-box__status').textContent = 'DOWN';
+
+    var migrating = pod.users.slice();
+    pod.users = [];
+    flashRedis();
+
+    var redisCenter = {
+      x: redisEl.offsetLeft + redisEl.offsetWidth / 2 - 25,
+      y: redisEl.offsetTop + redisEl.offsetHeight / 2 - 16
+    };
+
+    migrating.forEach(function (chipId, i) {
+      var chip = chips[chipId];
+      chip.el.style.left = redisCenter.x + 'px';
+      chip.el.style.top = redisCenter.y + 'px';
+
+      setTimeout(function () {
+        var destIndex = pickHealthyPod(podIndex);
+        var destSlot = pods[destIndex].users.length;
+        pods[destIndex].users.push(chipId);
+        chip.podIndex = destIndex;
+        placeChip(chipId, destIndex, destSlot);
+        highlightPod(destIndex);
+      }, 550 + i * 160);
+    });
+
+    setTimeout(function () {
+      podEl.classList.remove('is-down');
+      podEl.querySelector('.pod-box__status').textContent = '정상';
+    }, 550 + migrating.length * 160 + 900);
+  }
+
+  function start() {
+    if (downTimer) return;
+    init();
+    downTimer = setInterval(triggerDown, PODS_PER_CYCLE_MS);
+  }
+
+  function stop() {
+    clearInterval(downTimer);
+    downTimer = null;
+    canvas.querySelectorAll('.pod-user').forEach(function (el) { el.remove(); });
+    podEls.forEach(function (el) {
+      el.classList.remove('is-down', 'is-hit');
+    });
+  }
+
+  if (openBtn) {
+    openBtn.addEventListener('click', function () {
+      if (dialog.open) return;
+      dialog.showModal();
+      start();
+    });
+  }
+  if (closeBtn) closeBtn.addEventListener('click', function () { dialog.close(); });
+  dialog.addEventListener('click', function (e) {
+    if (e.target === dialog) dialog.close();
+  });
+  dialog.addEventListener('close', stop);
+})();
+
 // 상단 네비 현재 위치 강조 (scrollspy)
 (function () {
   var navLinks = document.querySelectorAll('.site-nav__links a');
