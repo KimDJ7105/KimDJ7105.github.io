@@ -451,7 +451,9 @@ html.js .reveal.is-visible {
   .site-nav,
   .project-footer,
   .back-to-top,
-  .site-nav__pdf {
+  .site-nav__pdf,
+  .demo-trigger,
+  .demo-dialog {
     display: none !important;
   }
   html.js .reveal {
