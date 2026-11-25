@@ -770,27 +770,27 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
 
   function spawnPos() {
     var r = rectOf(spawnLabel);
-    return { x: r.left + r.width / 2 - 17, y: r.top + r.height / 2 - 12 };
+    return { x: r.left + r.width / 2 - 17, y: r.top + r.height / 2 - 10 };
   }
 
   function queueSlotPos(i) {
     var r = rectOf(queueBox);
-    return { x: r.left + r.width / 2 - 17, y: r.top + 34 + i * 24 };
+    return { x: r.left + r.width / 2 - 17, y: r.top + 32 + i * 20 };
   }
 
   function directWaitSlotPos(i) {
     var r = rectOf(ollamaBox);
-    return { x: r.left - 44, y: r.top + 34 + i * 24 };
+    return { x: r.left - 44, y: r.top + 32 + i * 20 };
   }
 
   function ollamaSlotPos() {
     var r = rectOf(ollamaBox);
-    return { x: r.left + r.width / 2 - 17, y: r.top + r.height / 2 - 12 };
+    return { x: r.left + r.width / 2 - 17, y: r.top + r.height / 2 - 10 };
   }
 
   function doneSlotPos(i) {
     var r = rectOf(doneBox);
-    return { x: r.left + r.width / 2 - 17, y: r.top + 34 + i * 24 };
+    return { x: r.left + r.width / 2 - 17, y: r.top + 32 + i * 20 };
   }
 
   function updateQueueBoxLabel() {
