@@ -263,7 +263,7 @@
 
       <h3>설계 판단 — 측정으로 점검한 Job Queue 도입 여부</h3>
       <p class="project-message">성능 측정을 통해 Job Queue의 도입 여부를 판단.</p>
-      <p><strong>대상 기능</strong>: AI 호출이 게임 서버를 막지 않도록 비동기 Job Queue와 Worker를 만들기로 계획했었다.</p>
+      <p><strong>Job Queue 구상</strong>: AI 호출 요청(범행 평가·추리 판정)을 큐에 쌓아두고, 별도 Worker가 꺼내 순차적으로 Ollama에 전달하는 비동기 구조다. 요청이 몰려도 게임 서버의 메인 처리 흐름은 큐에 적재만 하고 바로 다음 작업으로 넘어가도록 분리하는 게 목적이었다.</p>
       <p><strong>측정</strong>: Python(asyncio) 테스트 스크립트로 N개 방의 범인 역할 WebSocket 클라이언트를 동시에 제어해, 같은 시점에 범행을 제출하게 만들어 Ollama에 요청이 한꺼번에 몰리게 했다. 동시에 AI와 무관한 통제 방을 하나 둬서 0.2초 간격으로 메시지를 보내며, 요청이 쌓여 있는 동안 게임 서버의 다른 처리까지 느려지는지를 그 응답으로 가늠했다.</p>
 
       <table class="compare-table">
