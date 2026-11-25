@@ -660,7 +660,7 @@ th { color: var(--color-muted); font-weight: 600; }
   position: relative;
   width: 720px;
   max-width: 100%;
-  height: 260px;
+  height: 210px;
   margin: 0.25rem auto 0.75rem;
 }
 .jq-box {
@@ -676,15 +676,14 @@ th { color: var(--color-muted); font-weight: 600; }
 }
 .jq-box__title { font-weight: 700; font-size: 0.85rem; }
 .jq-box__sub { font-size: 0.72rem; color: var(--color-muted); margin-top: 0.2rem; }
-.jq-box--loop { left: 10px; top: 10px; width: 170px; border-color: var(--color-text); }
-.jq-box--queue { left: 230px; top: 90px; height: 120px; }
+.jq-box--queue { left: 230px; top: 30px; height: 120px; }
 .jq-box--queue.is-unused { opacity: 0.4; }
-.jq-box--ollama { left: 410px; top: 90px; height: 120px; border-color: var(--color-text); }
-.jq-box--done { left: 600px; top: 90px; height: 120px; }
+.jq-box--ollama { left: 410px; top: 30px; height: 120px; border-color: var(--color-text); }
+.jq-box--done { left: 600px; top: 30px; height: 120px; }
 .jq-spawn-label {
   position: absolute;
   left: 10px;
-  top: 150px;
+  top: 90px;
   width: 170px;
   font-size: 0.78rem;
   color: var(--color-muted);
@@ -694,7 +693,7 @@ th { color: var(--color-muted); font-weight: 600; }
 .jq-timer {
   position: absolute;
   left: 10px;
-  top: 228px;
+  top: 168px;
   right: 10px;
   font-size: 0.88rem;
   font-weight: 700;

@@ -727,7 +727,6 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   var closeBtn = dialog.querySelector('.demo-dialog__close');
   var modeButtons = dialog.querySelectorAll('.mode-toggle__btn');
   var canvas = dialog.querySelector('#jobqueue-canvas');
-  var tickEl = dialog.querySelector('#jq-tick');
   var queueBox = dialog.querySelector('#jq-queue-box');
   var queueSub = queueBox.querySelector('.jq-box__sub');
   var ollamaBox = dialog.querySelector('#jq-ollama-box');
@@ -739,14 +738,26 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   var BATCH_N = 4;
   var PROCESS_MS = 900;
   var TRAVEL_MS = 500;
-  var GAP_AFTER_BATCH_MS = 1400;
-  var TICK_INTERVAL_MS = 350;
+  var GAP_AFTER_BATCH_MS = 2400;
 
   var mode = 'direct';
-  var tickTimer = null;
-  var tickCount = 0;
-  var batchTimer = null;
+  var running = false;
+  var pendingTimers = [];
   var chipEls = [];
+
+  function schedule(fn, ms) {
+    var id = setTimeout(function () {
+      pendingTimers = pendingTimers.filter(function (t) { return t !== id; });
+      fn();
+    }, ms);
+    pendingTimers.push(id);
+    return id;
+  }
+
+  function clearPendingTimers() {
+    pendingTimers.forEach(function (id) { clearTimeout(id); });
+    pendingTimers = [];
+  }
 
   function rectOf(el) {
     return { left: el.offsetLeft, top: el.offsetTop, width: el.offsetWidth, height: el.offsetHeight };
@@ -808,7 +819,7 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
     }
 
     // 동시 제출 직후, 모드에 따라 대기 위치로 이동(대기 상태 시각화)
-    setTimeout(function () {
+    schedule(function () {
       chips.forEach(function (chip, i) {
         var pos = mode === 'queue' ? queueSlotPos(i) : directWaitSlotPos(i);
         setChipPos(chip.el, pos.x, pos.y);
@@ -822,7 +833,7 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
       if (idx >= chips.length) {
         var elapsed = ((performance.now() - startTs) / 1000).toFixed(1);
         timerEl.textContent = '배치 소요 시간: ' + elapsed + 's (Job Queue 유무 무관)';
-        batchTimer = setTimeout(runBatch, GAP_AFTER_BATCH_MS);
+        schedule(runBatch, GAP_AFTER_BATCH_MS);
         return;
       }
       var chip = chips[idx];
@@ -830,7 +841,7 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
       chip.el.classList.add('is-active');
       setChipPos(chip.el, op.x, op.y);
 
-      setTimeout(function () {
+      schedule(function () {
         var dp = doneSlotPos(idx);
         setChipPos(chip.el, dp.x, dp.y);
         doneCount++;
@@ -840,28 +851,21 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
       }, PROCESS_MS);
     }
 
-    batchTimer = setTimeout(processNext, TRAVEL_MS);
+    schedule(processNext, TRAVEL_MS);
   }
 
   function start() {
-    if (tickTimer) return;
+    if (running) return;
+    running = true;
     mode = 'direct';
     modeButtons.forEach(function (b) { b.classList.toggle('is-active', b.dataset.mode === 'direct'); });
     updateQueueBoxLabel();
-    tickCount = 0;
-    tickEl.textContent = '0';
-    tickTimer = setInterval(function () {
-      tickCount++;
-      tickEl.textContent = String(tickCount);
-    }, TICK_INTERVAL_MS);
     runBatch();
   }
 
   function stop() {
-    if (tickTimer) clearInterval(tickTimer);
-    tickTimer = null;
-    if (batchTimer) clearTimeout(batchTimer);
-    batchTimer = null;
+    running = false;
+    clearPendingTimers();
     chipEls.forEach(function (c) { c.remove(); });
     chipEls = [];
   }

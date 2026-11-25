@@ -263,7 +263,7 @@
 
       <h3 class="heading-with-action">
         설계 판단 — 측정으로 점검한 Job Queue 도입 여부
-        <button type="button" class="demo-trigger" data-dialog="jobqueue-demo">Job Queue 무관함 보기</button>
+        <button type="button" class="demo-trigger" data-dialog="jobqueue-demo">Job Queue 비교 보기</button>
       </h3>
       <p class="project-message">성능 측정을 통해 Job Queue의 도입 여부를 판단.</p>
       <p><strong>Job Queue 구상</strong>: AI 호출 요청(범행 평가·추리 판정)을 큐에 쌓아두고, 별도 Worker가 꺼내 순차적으로 Ollama에 전달하는 비동기 구조다. 요청이 몰려도 게임 서버의 메인 처리 흐름은 큐에 적재만 하고 바로 다음 작업으로 넘어가도록 분리하는 게 목적이었다.</p>
@@ -294,11 +294,6 @@
           <button type="button" class="mode-toggle__btn" data-mode="queue">Job Queue 추가(가상)</button>
         </div>
         <div class="jobqueue-canvas" id="jobqueue-canvas">
-          <div class="jq-box jq-box--loop" id="jq-mainloop">
-            <div class="jq-box__title">게임 서버 메인 루프</div>
-            <div class="jq-box__sub">tick <span id="jq-tick">0</span></div>
-          </div>
-
           <div class="jq-spawn-label" id="jq-spawn-label">범인 4명<br>동시 제출</div>
 
           <div class="jq-box jq-box--queue" id="jq-queue-box">
@@ -322,7 +317,7 @@
           <span><i class="dot dot--pass"></i>처리 중/완료</span>
           <span><i class="dot dot--drop"></i>대기 중</span>
         </div>
-        <p class="demo-dialog__note">Job Queue를 추가해도 Ollama는 여전히 한 번에 1건만 처리하므로, 4건을 전부 끝내는 데 걸리는 시간은 두 구조에서 동일하다 — 메인 루프 tick도 끊기지 않고 계속 올라가는 걸로, 게임 서버 자체는 애초에 막힌 적이 없었다는 걸 보여준다. 시간은 실측값이 아닌 비례 축소값이다.</p>
+        <p class="demo-dialog__note">Job Queue를 추가해도 Ollama는 여전히 한 번에 1건만 처리하므로, 4건을 전부 끝내는 데 걸리는 시간은 두 구조에서 동일하다. 시간은 실측값이 아닌 비례 축소값이다.</p>
       </dialog>
 
       <div class="project-summary">
