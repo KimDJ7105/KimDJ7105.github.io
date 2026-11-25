@@ -211,13 +211,16 @@
       <p class="project-message">실제 배포 환경에서 성능 한계를 측정하고, 구조 개선 여부를 비용 대비로 판단했다.</p>
       <p>AWS EC2(t3.small, 2 vCPU·2GB RAM) 실배포 환경에서 동접 100~2,000명 구간을 단계별로 측정했다. 동접 300명에서 CPU 사용률 91%, 평균 응답 지연 약 529ms를 기록했고, 1,500명부터 신규 접속이 타임아웃되는 한계를 확인했다. 싱글스레드 이벤트 루프 구조에서는 CPU가 포화되면 신규 연결 처리도 같은 이벤트 루프에서 대기하게 된다 — 신규 접속 실패 시도에서 최대 약 1분간 대기한 뒤 타임아웃되는 현상을 관측했다.</p>
       <p>근본적인 개선을 위해 멀티스레드 구조 전환을 검토했으나, 프로젝트 규모와 예상 동시 접속자 수를 고려해 전환 비용이 과도하다고 판단, 후속 개선 과제로 남겼다.</p>
-      <ul>
-        <li>uWebSockets 기반 커스텀 바이너리 프로토콜을 설계하고 실시간 지도 동기화 서버 구현</li>
-        <li>영구 상태인 타일과 일시적 상태인 유저 위치의 특성에 맞춰 서로 다른 AOI 기반 동기화 전략 설계</li>
-        <li>k6 부하 테스트로 O(N²) 병목을 발견하고, AOI 적용에 따른 상수 계수 최적화와 점근적 복잡도의 한계를 분석</li>
-        <li>Terraform으로 AWS EC2에 직접 배포, 동접 단계별 실측으로 명확한 용량 한계선 도출</li>
-        <li>Claude Code의 초기 설계 제안을 그대로 수용하지 않고, 메모리 확장성 및 처리 비용을 검토해 전역 Dirty-set 기반 구조로 개선</li>
-      </ul>
+      <div class="project-summary">
+        <p class="project-summary__label">핵심 요약</p>
+        <ul>
+          <li>uWebSockets 기반 커스텀 바이너리 프로토콜을 설계하고 실시간 지도 동기화 서버 구현</li>
+          <li>영구 상태인 타일과 일시적 상태인 유저 위치의 특성에 맞춰 서로 다른 AOI 기반 동기화 전략 설계</li>
+          <li>k6 부하 테스트로 O(N²) 병목을 발견하고, AOI 적용에 따른 상수 계수 최적화와 점근적 복잡도의 한계를 분석</li>
+          <li>Terraform으로 AWS EC2에 직접 배포, 동접 단계별 실측으로 명확한 용량 한계선 도출</li>
+          <li>Claude Code의 초기 설계 제안을 그대로 수용하지 않고, 메모리 확장성 및 처리 비용을 검토해 전역 Dirty-set 기반 구조로 개선</li>
+        </ul>
+      </div>
     </div>
     <div class="project-footer">
       <p class="next-up"><span class="next-up__label">다음 프로젝트</span>살인의 추억</p>
@@ -379,12 +382,15 @@
       <p><strong>문제 재현</strong>: 부하 테스트 중 기록기가 동일한 체결을 중복 저장하는 현상이 발생했다 — 매수·매도 주문 조합은 동일한데 체결 건수가 증가하는 현상을 확인했고, 기록기 재배포·스케일아웃 과정에서 반복적으로 관측됐다.</p>
       <p><strong>근본 원인</strong>: <em>Kafka 재전달</em> — 기록기가 오프셋 커밋 전에 다운되면 Kafka는 해당 배치를 "처리 안 됨"으로 판단해 재전달한다(at-least-once 전달 특성상 생길 수 있는 재처리). <em>중복 저장</em> — 체결 테이블이 매번 새로운 랜덤 ID로 저장하는 구조라 멱등성이 없어서, 재전달된 배치가 완전히 동일한 체결을 새 ID로 다시 저장했다.</p>
       <p><strong>해결 및 검증</strong>: 매수·매도 주문 조합이 매칭 규칙상 논리적으로 한 번만 성립한다는 점을 이용해, 해당 조합에 유니크 키를 걸고 <code>INSERT IGNORE</code>로 재전달된 중복 삽입을 차단했다.</p>
-      <ul>
-        <li>Go·Kafka를 처음 다루며 생성형 AI로 학습 곡선을 줄이고, 설계와 장애 진단에 집중</li>
-        <li>Bedrock(Claude Haiku) AI 트레이더의 출력을 4겹으로 검증하는 주문 파이프라인 설계</li>
-        <li>로컬에선 안 보이던 MSK 인증 지연발 리밸런스 루프를 근본 원인까지 추적해 병렬화로 해결</li>
-        <li>정합성 검사로 초과 체결(정밀도)과 중복 체결(멱등성) 원인을 규명하고 0건 검증</li>
-      </ul>
+      <div class="project-summary">
+        <p class="project-summary__label">핵심 요약</p>
+        <ul>
+          <li>Go·Kafka를 처음 다루며 생성형 AI로 학습 곡선을 줄이고, 설계와 장애 진단에 집중</li>
+          <li>Bedrock(Claude Haiku) AI 트레이더의 출력을 4겹으로 검증하는 주문 파이프라인 설계</li>
+          <li>로컬에선 안 보이던 MSK 인증 지연발 리밸런스 루프를 근본 원인까지 추적해 병렬화로 해결</li>
+          <li>정합성 검사로 초과 체결(정밀도)과 중복 체결(멱등성) 원인을 규명하고 0건 검증</li>
+        </ul>
+      </div>
     </div>
     <div class="project-footer">
       <p class="next-up"><span class="next-up__label">다음 프로젝트</span>증강 오목</p>
@@ -469,13 +475,16 @@
         <p class="demo-dialog__note">Pod 하나가 강제 종료되면 그 안에 있던 유저들이 Redis에 저장된 세션·게임 상태를 읽어 다른 Pod로 자동 재접속하는 과정을 단순화해 보여준다. 인원·배치는 실제 수치가 아니다.</p>
       </dialog>
 
-      <ul>
-        <li>React와 WebSocket 기반으로 렌주룰 및 증강 시스템을 적용한 실시간 대전 웹 게임 개발</li>
-        <li>Redis를 세션·게임 상태 저장소로 활용해 서버 장애 이후에도 재접속·대전 상태 복구가 가능한 구조 설계</li>
-        <li>Pod·Node 강제 종료로 장애 상황을 재현해 세션 상태 복구 동작 검증</li>
-        <li>AWS EKS 환경에서 k6로 최대 3,000명 동시 접속 부하 테스트 수행</li>
-        <li>AWS에서 일주일간 배포·운영해 서비스 연속성 확보 검증</li>
-      </ul>
+      <div class="project-summary">
+        <p class="project-summary__label">핵심 요약</p>
+        <ul>
+          <li>React와 WebSocket 기반으로 렌주룰 및 증강 시스템을 적용한 실시간 대전 웹 게임 개발</li>
+          <li>Redis를 세션·게임 상태 저장소로 활용해 서버 장애 이후에도 재접속·대전 상태 복구가 가능한 구조 설계</li>
+          <li>Pod·Node 강제 종료로 장애 상황을 재현해 세션 상태 복구 동작 검증</li>
+          <li>AWS EKS 환경에서 k6로 최대 3,000명 동시 접속 부하 테스트 수행</li>
+          <li>AWS에서 일주일간 배포·운영해 서비스 연속성 확보 검증</li>
+        </ul>
+      </div>
     </div>
     <div class="project-footer">
       <p class="next-up"><span class="next-up__label">다음 프로젝트</span>Re:Walk</p>
@@ -610,12 +619,15 @@
         <p class="demo-dialog__note">같은 시점에 도착하는 비동기 콜백이, 소유권 모델에 따라 유효한 객체에 접근하는지 이미 해제된 메모리에 접근하는지를 반복 재생으로 보여준다. 실제 타이밍은 단순화한 것이며 매 사이클 동일하게 재현되지만, 실제 환경에서는 호출 순서가 간헐적으로만 어긋났다.</p>
       </dialog>
 
-      <ul>
-        <li>Boost.Asio 기반 비동기 네트워크 서버를 Room 단위로 분산된 멀티스레드 구조로 설계·구현</li>
-        <li>Room별 스레드 귀속으로 Player 객체의 접근 범위를 제한하고, 동기화 비용을 줄이는 구조 설계</li>
-        <li>비동기 콜백과 객체 생명주기 불일치로 발생한 Access Violation을 shared_ptr·weak_ptr 기반 소유권 관리로 해결</li>
-        <li>ID 기반 접근 패턴을 분석해 평균 O(1) 검색의 unordered_map을 자료구조로 선정</li>
-      </ul>
+      <div class="project-summary">
+        <p class="project-summary__label">핵심 요약</p>
+        <ul>
+          <li>Boost.Asio 기반 비동기 네트워크 서버를 Room 단위로 분산된 멀티스레드 구조로 설계·구현</li>
+          <li>Room별 스레드 귀속으로 Player 객체의 접근 범위를 제한하고, 동기화 비용을 줄이는 구조 설계</li>
+          <li>비동기 콜백과 객체 생명주기 불일치로 발생한 Access Violation을 shared_ptr·weak_ptr 기반 소유권 관리로 해결</li>
+          <li>ID 기반 접근 패턴을 분석해 평균 O(1) 검색의 unordered_map을 자료구조로 선정</li>
+        </ul>
+      </div>
     </div>
     <div class="project-footer">
       <p class="next-up"><span class="next-up__label">다음 프로젝트</span>No More Crunch</p>
@@ -667,11 +679,14 @@ public override void Render()
     }
 }</code></pre>
 
-      <ul>
-        <li>Photon Fusion 환경에서 오브젝트 소유권 충돌 가능성을 사전에 설계로 방어</li>
-        <li>Unity Version Control 기반으로 팀 협업 진행</li>
-        <li>4인 팀에서 클라이언트-호스트 동기화와 게임 로직을 담당</li>
-      </ul>
+      <div class="project-summary">
+        <p class="project-summary__label">핵심 요약</p>
+        <ul>
+          <li>Photon Fusion 환경에서 오브젝트 소유권 충돌 가능성을 사전에 설계로 방어</li>
+          <li>Unity Version Control 기반으로 팀 협업 진행</li>
+          <li>4인 팀에서 클라이언트-호스트 동기화와 게임 로직을 담당</li>
+        </ul>
+      </div>
     </div>
     <div class="project-footer">
       <p class="next-up"><span class="next-up__label">다음 프로젝트</span>마무리</p>
