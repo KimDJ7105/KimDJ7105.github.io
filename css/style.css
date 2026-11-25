@@ -655,6 +655,69 @@ th { color: var(--color-muted); font-weight: 600; }
 .lifecycle-result.is-pass { background: rgba(36, 84, 255, 0.12); color: var(--color-accent); opacity: 1; }
 .lifecycle-result.is-fail { background: rgba(201, 68, 68, 0.12); color: #c94444; opacity: 1; }
 
+/* ===== Job Queue 유무 비교 데모 ===== */
+.jobqueue-canvas {
+  position: relative;
+  width: 720px;
+  max-width: 100%;
+  height: 260px;
+  margin: 0.25rem auto 0.75rem;
+}
+.jq-box {
+  position: absolute;
+  width: 150px;
+  box-sizing: border-box;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg);
+  padding: 0.5rem 0.6rem;
+  text-align: center;
+  transition: opacity 0.2s ease;
+}
+.jq-box__title { font-weight: 700; font-size: 0.85rem; }
+.jq-box__sub { font-size: 0.72rem; color: var(--color-muted); margin-top: 0.2rem; }
+.jq-box--loop { left: 10px; top: 10px; width: 170px; border-color: var(--color-text); }
+.jq-box--queue { left: 230px; top: 90px; height: 120px; }
+.jq-box--queue.is-unused { opacity: 0.4; }
+.jq-box--ollama { left: 410px; top: 90px; height: 120px; border-color: var(--color-text); }
+.jq-box--done { left: 600px; top: 90px; height: 120px; }
+.jq-spawn-label {
+  position: absolute;
+  left: 10px;
+  top: 150px;
+  width: 170px;
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  text-align: center;
+  line-height: 1.4;
+}
+.jq-timer {
+  position: absolute;
+  left: 10px;
+  top: 228px;
+  right: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: center;
+}
+.jq-chip {
+  position: absolute;
+  width: 34px;
+  height: 24px;
+  border-radius: 5px;
+  background: #c94444;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: left 0.5s ease, top 0.5s ease, background 0.2s ease;
+  z-index: 3;
+}
+.jq-chip.is-active { background: var(--color-accent); }
+
 .shot-pair {
   margin: 1.5rem 0;
   text-align: center;

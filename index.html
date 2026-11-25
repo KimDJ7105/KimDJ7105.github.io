@@ -261,7 +261,10 @@
         </tbody>
       </table>
 
-      <h3>설계 판단 — 측정으로 점검한 Job Queue 도입 여부</h3>
+      <h3 class="heading-with-action">
+        설계 판단 — 측정으로 점검한 Job Queue 도입 여부
+        <button type="button" class="demo-trigger" data-dialog="jobqueue-demo">Job Queue 무관함 보기</button>
+      </h3>
       <p class="project-message">성능 측정을 통해 Job Queue의 도입 여부를 판단.</p>
       <p><strong>Job Queue 구상</strong>: AI 호출 요청(범행 평가·추리 판정)을 큐에 쌓아두고, 별도 Worker가 꺼내 순차적으로 Ollama에 전달하는 비동기 구조다. 요청이 몰려도 게임 서버의 메인 처리 흐름은 큐에 적재만 하고 바로 다음 작업으로 넘어가도록 분리하는 게 목적이었다.</p>
       <p><strong>측정</strong>: Python(asyncio) 테스트 스크립트로 N개 방의 범인 역할 WebSocket 클라이언트를 동시에 제어해, 같은 시점에 범행을 제출하게 만들어 Ollama에 요청이 한꺼번에 몰리게 했다. 동시에 AI와 무관한 통제 방을 하나 둬서 0.2초 간격으로 메시지를 보내며, 요청이 쌓여 있는 동안 게임 서버의 다른 처리까지 느려지는지를 그 응답으로 가늠했다.</p>
@@ -280,6 +283,47 @@
 
       <p>완료 시간은 N에 대략 비례해서 늘었다. 같은 시간 동안 통제 방에 보낸 메시지 218건은 전부 1ms 이내에 응답했고, 5초 타임아웃은 0건이었다. 게임 서버의 핵심 실행 흐름은 AI 요청이 아무리 쌓여도 전혀 지연되지 않는다는 뜻이다.</p>
       <p><strong>결론</strong>: 병목은 게임 서버가 아니라 Ollama 단일 인스턴스의 추론 처리량에 있다. 게임 서버 안에 Job Queue를 만들어도 Ollama가 초당 처리할 수 있는 추론 횟수 자체는 그대로라, 이 선형 지연은 사라지지 않는다. 그래서 이 비동기 구조는 추가하지 않기로 했고, 병목을 해결하기 위해서는 게임 서버의 스레딩 모델이 아니라 추론 서빙 계층(Ollama 인스턴스 추가 등)을 확장해야 한다.</p>
+
+      <dialog id="jobqueue-demo" class="demo-dialog demo-dialog--wide">
+        <div class="demo-dialog__header">
+          <h4>Job Queue 유무와 처리 시간</h4>
+          <button type="button" class="demo-dialog__close" aria-label="닫기">×</button>
+        </div>
+        <div class="mode-toggle" role="group" aria-label="구조 선택">
+          <button type="button" class="mode-toggle__btn is-active" data-mode="direct">Job Queue 없음(직접 호출)</button>
+          <button type="button" class="mode-toggle__btn" data-mode="queue">Job Queue 추가(가상)</button>
+        </div>
+        <div class="jobqueue-canvas" id="jobqueue-canvas">
+          <div class="jq-box jq-box--loop" id="jq-mainloop">
+            <div class="jq-box__title">게임 서버 메인 루프</div>
+            <div class="jq-box__sub">tick <span id="jq-tick">0</span></div>
+          </div>
+
+          <div class="jq-spawn-label" id="jq-spawn-label">범인 4명<br>동시 제출</div>
+
+          <div class="jq-box jq-box--queue" id="jq-queue-box">
+            <div class="jq-box__title">Job Queue</div>
+            <div class="jq-box__sub">대기 중</div>
+          </div>
+
+          <div class="jq-box jq-box--ollama" id="jq-ollama-box">
+            <div class="jq-box__title">Ollama</div>
+            <div class="jq-box__sub">한 번에 1건만 순차 처리</div>
+          </div>
+
+          <div class="jq-box jq-box--done" id="jq-done-box">
+            <div class="jq-box__title">완료</div>
+            <div class="jq-box__sub"><span id="jq-done-count">0</span>/4</div>
+          </div>
+
+          <div class="jq-timer" id="jq-timer">배치 소요 시간: -</div>
+        </div>
+        <div class="pipeline-legend">
+          <span><i class="dot dot--pass"></i>처리 중/완료</span>
+          <span><i class="dot dot--drop"></i>대기 중</span>
+        </div>
+        <p class="demo-dialog__note">Job Queue를 추가해도 Ollama는 여전히 한 번에 1건만 처리하므로, 4건을 전부 끝내는 데 걸리는 시간은 두 구조에서 동일하다 — 메인 루프 tick도 끊기지 않고 계속 올라가는 걸로, 게임 서버 자체는 애초에 막힌 적이 없었다는 걸 보여준다. 시간은 실측값이 아닌 비례 축소값이다.</p>
+      </dialog>
 
       <div class="project-summary">
         <p class="project-summary__label">핵심 요약</p>

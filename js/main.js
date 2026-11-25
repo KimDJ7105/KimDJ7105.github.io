@@ -718,6 +718,176 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
   dialog.addEventListener('close', stop);
 })();
 
+// 살인의 추억 Job Queue 유무 비교 데모 (모달)
+(function () {
+  var dialog = document.getElementById('jobqueue-demo');
+  if (!dialog) return;
+
+  var openBtn = document.querySelector('[data-dialog="jobqueue-demo"]');
+  var closeBtn = dialog.querySelector('.demo-dialog__close');
+  var modeButtons = dialog.querySelectorAll('.mode-toggle__btn');
+  var canvas = dialog.querySelector('#jobqueue-canvas');
+  var tickEl = dialog.querySelector('#jq-tick');
+  var queueBox = dialog.querySelector('#jq-queue-box');
+  var queueSub = queueBox.querySelector('.jq-box__sub');
+  var ollamaBox = dialog.querySelector('#jq-ollama-box');
+  var doneBox = dialog.querySelector('#jq-done-box');
+  var doneCountEl = dialog.querySelector('#jq-done-count');
+  var spawnLabel = dialog.querySelector('#jq-spawn-label');
+  var timerEl = dialog.querySelector('#jq-timer');
+
+  var BATCH_N = 4;
+  var PROCESS_MS = 900;
+  var TRAVEL_MS = 500;
+  var GAP_AFTER_BATCH_MS = 1400;
+  var TICK_INTERVAL_MS = 350;
+
+  var mode = 'direct';
+  var tickTimer = null;
+  var tickCount = 0;
+  var batchTimer = null;
+  var chipEls = [];
+
+  function rectOf(el) {
+    return { left: el.offsetLeft, top: el.offsetTop, width: el.offsetWidth, height: el.offsetHeight };
+  }
+
+  function setChipPos(chip, x, y) {
+    chip.style.left = x + 'px';
+    chip.style.top = y + 'px';
+  }
+
+  function spawnPos() {
+    var r = rectOf(spawnLabel);
+    return { x: r.left + r.width / 2 - 17, y: r.top + r.height / 2 - 12 };
+  }
+
+  function queueSlotPos(i) {
+    var r = rectOf(queueBox);
+    return { x: r.left + r.width / 2 - 17, y: r.top + 34 + i * 24 };
+  }
+
+  function directWaitSlotPos(i) {
+    var r = rectOf(ollamaBox);
+    return { x: r.left - 44, y: r.top + 34 + i * 24 };
+  }
+
+  function ollamaSlotPos() {
+    var r = rectOf(ollamaBox);
+    return { x: r.left + r.width / 2 - 17, y: r.top + r.height / 2 - 12 };
+  }
+
+  function doneSlotPos(i) {
+    var r = rectOf(doneBox);
+    return { x: r.left + r.width / 2 - 17, y: r.top + 34 + i * 24 };
+  }
+
+  function updateQueueBoxLabel() {
+    queueBox.classList.toggle('is-unused', mode === 'direct');
+    queueSub.textContent = mode === 'direct' ? '사용 안 함' : '대기 중';
+  }
+
+  function runBatch() {
+    // 이전 배치 칩 정리
+    chipEls.forEach(function (c) { c.remove(); });
+    chipEls = [];
+    doneCountEl.textContent = '0';
+    timerEl.textContent = '배치 진행 중...';
+
+    var startTs = performance.now();
+    var sp = spawnPos();
+    var chips = [];
+    for (var i = 0; i < BATCH_N; i++) {
+      var el = document.createElement('div');
+      el.className = 'jq-chip';
+      el.textContent = 'R' + (i + 1);
+      setChipPos(el, sp.x, sp.y);
+      canvas.appendChild(el);
+      chipEls.push(el);
+      chips.push({ el: el });
+    }
+
+    // 동시 제출 직후, 모드에 따라 대기 위치로 이동(대기 상태 시각화)
+    setTimeout(function () {
+      chips.forEach(function (chip, i) {
+        var pos = mode === 'queue' ? queueSlotPos(i) : directWaitSlotPos(i);
+        setChipPos(chip.el, pos.x, pos.y);
+      });
+    }, 30);
+
+    var idx = 0;
+    var doneCount = 0;
+
+    function processNext() {
+      if (idx >= chips.length) {
+        var elapsed = ((performance.now() - startTs) / 1000).toFixed(1);
+        timerEl.textContent = '배치 소요 시간: ' + elapsed + 's (Job Queue 유무 무관)';
+        batchTimer = setTimeout(runBatch, GAP_AFTER_BATCH_MS);
+        return;
+      }
+      var chip = chips[idx];
+      var op = ollamaSlotPos();
+      chip.el.classList.add('is-active');
+      setChipPos(chip.el, op.x, op.y);
+
+      setTimeout(function () {
+        var dp = doneSlotPos(idx);
+        setChipPos(chip.el, dp.x, dp.y);
+        doneCount++;
+        doneCountEl.textContent = String(doneCount);
+        idx++;
+        processNext();
+      }, PROCESS_MS);
+    }
+
+    batchTimer = setTimeout(processNext, TRAVEL_MS);
+  }
+
+  function start() {
+    if (tickTimer) return;
+    mode = 'direct';
+    modeButtons.forEach(function (b) { b.classList.toggle('is-active', b.dataset.mode === 'direct'); });
+    updateQueueBoxLabel();
+    tickCount = 0;
+    tickEl.textContent = '0';
+    tickTimer = setInterval(function () {
+      tickCount++;
+      tickEl.textContent = String(tickCount);
+    }, TICK_INTERVAL_MS);
+    runBatch();
+  }
+
+  function stop() {
+    if (tickTimer) clearInterval(tickTimer);
+    tickTimer = null;
+    if (batchTimer) clearTimeout(batchTimer);
+    batchTimer = null;
+    chipEls.forEach(function (c) { c.remove(); });
+    chipEls = [];
+  }
+
+  modeButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      mode = btn.dataset.mode;
+      modeButtons.forEach(function (b) { b.classList.toggle('is-active', b === btn); });
+      updateQueueBoxLabel();
+    });
+  });
+
+  if (openBtn) {
+    openBtn.addEventListener('click', function () {
+      if (dialog.open) return;
+      dialog.showModal();
+      start();
+    });
+  }
+  if (closeBtn) closeBtn.addEventListener('click', function () { dialog.close(); });
+  dialog.addEventListener('click', function (e) {
+    if (e.target === dialog) dialog.close();
+  });
+  dialog.addEventListener('close', stop);
+})();
+
 // 상단 네비 현재 위치 강조 (scrollspy)
 (function () {
   var navLinks = document.querySelectorAll('.site-nav__links a');
