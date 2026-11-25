@@ -439,14 +439,21 @@ document.querySelectorAll('.video__thumb').forEach(function (thumb) {
     }, 550 + migrating.length * 160 + 900);
   }
 
+  function scheduleNextDown(delay) {
+    downTimer = setTimeout(function () {
+      triggerDown();
+      scheduleNextDown(PODS_PER_CYCLE_MS);
+    }, delay);
+  }
+
   function start() {
     if (downTimer) return;
     init();
-    downTimer = setInterval(triggerDown, PODS_PER_CYCLE_MS);
+    scheduleNextDown(2200); // 첫 장애 발생까지 대기 시간 단축(이후 주기는 PODS_PER_CYCLE_MS 유지)
   }
 
   function stop() {
-    clearInterval(downTimer);
+    clearTimeout(downTimer);
     downTimer = null;
     canvas.querySelectorAll('.pod-user').forEach(function (el) { el.remove(); });
     podEls.forEach(function (el) {
